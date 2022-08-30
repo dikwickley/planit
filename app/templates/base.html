@@ -1,24 +1,84 @@
 <!doctype html>
+<html class="p-0">
 <title>{% block title %}{% endblock %} | Plan it!</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-<nav>
-  <h1>Plan It</h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          pblack: '#252A34',
+          pred : '#FF2E63',
+          pgreen: '#08D9D6'
+        }
+      }
+    }
+  }
+</script>
+
+<div class="h-[100vh] w-[100vw] bg-pblack p-0 m-0 flex overflow-hidden relative">
+
+  <div class="bg-pred h-[20vw] w-[20vw] absolute rounded-full top-[-10vw] right-[-10vw]">
+
+  </div>
+
+  <div class="h-full  flex flex-col justify-between">
+    <div>
+      <div class="text-pred text-[10vw]  leading-none tracking-tighter ">
+        {% block header %}{% endblock %}
+      </div>
+      <!-- <div class="text-white text-[1.5vw] text-right mr-5">
+        hello, Aniket
+      </div> -->
+      {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="flex flex-col my-4 mr-[15vw]">
+      <a href="{{ url_for('index') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          home
+        </div>
+      </a>
+      <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        plan
+      </div>
+      <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        practice
+      </div>
+      <a href="{{ url_for('auth.signup') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          signup
+        </div>
+      </a>
+      <a href="{{ url_for('auth.login') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          login
+        </div>
+      </a>
+      <a href="{{ url_for('auth.logout') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          logout
+        </div>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="w-full h-full p-10">
+    {% block content %}{% endblock %}
+  </div>
+
+  
+
+  </div>
+
+  <div class="absolute bottom-0 right-0 text-[10vw] leading-snug text-pred">
+    plan<span class="text-white p-0 m-0">it</span>
+  </div>
+
+</div>
+
+</html>

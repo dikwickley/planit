@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}login{% endblock %}</h1>
+  <h1>{% block title %}signup{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 <div class="w-full h-full flex flex-col justify-center">
   <form method="post" class="flex flex-col">
+    <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl"  autocomplete="off" name="name" placeholder="name" id="name" required>
     <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl"  autocomplete="off" name="email" placeholder="email" id="email" required>
     <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="password" placeholder="password" name="password" id="password" required>
-    <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack " type="submit" value="login">
-    <div class="text-white">don't have an account? <span class="text-pred">register</span></div>
+    <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="password" placeholder="confirm password" name="cpassword" id="cpassword" required>
+    <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack " type="submit" value="signup">
+    <div class="text-white">already have an account? <span class="text-pred">login</span></div>
     <div class="text-white">can't remember your password? <span class="text-pred">forgot password</span></div>
   </form>
 </div>
-  
 {% endblock %}
