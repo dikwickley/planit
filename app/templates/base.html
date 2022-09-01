@@ -2,6 +2,10 @@
 <html class="p-0">
 <title>{% block title %}{% endblock %} | Plan it!</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
 <script>
   tailwind.config = {
@@ -17,23 +21,30 @@
   }
 </script>
 
-<div class="h-[100vh] w-[100vw] bg-pblack p-0 m-0 flex overflow-hidden relative">
 
-  <div class="bg-pred h-[20vw] w-[20vw] absolute rounded-full top-[-10vw] right-[-10vw]">
+<!-- <div class="h-[500px] w-[500px]" > -->
 
-  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.21/vendor/three.r119.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.21/dist/vanta.globe.min.js"></script>
+
+<div id="anim_globe" class="h-[100vh] w-[100vw] bg-pblack p-0 m-0 flex overflow-hidden relative">
+
+  <!-- <div class="bg-pred h-[20vw] w-[20vw] absolute rounded-full top-[-10vw] right-[-10vw]">
+    top right
+  </div> -->
 
   <div class="h-full  flex flex-col justify-between">
     <div>
       <div class="text-pred text-[10vw]  leading-none tracking-tighter ">
         {% block header %}{% endblock %}
       </div>
-      <!-- <div class="text-white text-[1.5vw] text-right mr-5">
-        hello, Aniket
-      </div> -->
-      {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-      {% endfor %}
+      <div class="text-white text-[1.5vw] text-left m-5">
+        {% if "name" in session %}
+          hello, {{session['name']}}
+          {% endif %}
+      </div>
+     
     </div>
 
     <div class="flex flex-col my-4 mr-[15vw]">
@@ -42,9 +53,11 @@
           home
         </div>
       </a>
-      <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-        plan
-      </div>
+      <a href="{{ url_for('plan.show_plan') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          plan
+        </div>
+      </a>
       <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
         practice
       </div>
@@ -56,6 +69,11 @@
       <a href="{{ url_for('auth.login') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           login
+        </div>
+      </a>
+      <a href="{{ url_for('index') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          account
         </div>
       </a>
       <a href="{{ url_for('auth.logout') }}">
@@ -79,6 +97,40 @@
     plan<span class="text-white p-0 m-0">it</span>
   </div>
 
+  {% for message in get_flashed_messages() %}
+  <div id="flash-message"" class="bg-white opacity-75 p-2 m-2 px-12 rounded-md text-center absolute top-0 right-0">{{ message }}</div>
+  <script>
+    setTimeout(function() {
+        $('#flash-message').fadeOut('slow');
+    }, 5000);
+  </script>
+  
+{% endfor %}
+
 </div>
+
+<script src="three.r119.min.js" defer></script>
+<script src="vanta.globe.min.js" defer></script>
+<script> 
+VANTA.GLOBE({
+  //Add the id of your tag with the # before
+    el: "#anim_globe",
+  //All the controles for the user
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: true,
+  //Control the min-size of the animation
+    minHeight: 500.00,
+    minWidth: 500.00,
+  //Modify the sizing
+    scale: 1.00,
+    scaleMobile: 1.00,
+    size:0.90,
+  //Customise the colors
+    // color: 0x40db33,
+    // color2: 0x4f17ef,
+    // backgroundColor: 0xd83423
+  })
+</script>
 
 </html>

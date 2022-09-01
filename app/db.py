@@ -1,6 +1,9 @@
+import re
 import sqlite3
 import click
 from flask import current_app, g
+import pymongo
+
 
 
 def get_db():
@@ -12,6 +15,12 @@ def get_db():
         g.db.row_factory = sqlite3.Row
 
     return g.db
+
+def get_mongo():
+    myclient = pymongo.MongoClient("mongodb://aniket:Aniketsprx077@cluster0-shard-00-00-uugt8.mongodb.net:27017,cluster0-shard-00-01-uugt8.mongodb.net:27017,cluster0-shard-00-02-uugt8.mongodb.net:27017/main?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority")
+    return myclient["main"]
+     
+
 
 
 def close_db(e=None):

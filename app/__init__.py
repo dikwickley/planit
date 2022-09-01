@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template, session
-from flask_pymongo import PyMongo
+
 
 
 from .auth import login_required
@@ -9,8 +9,7 @@ from .auth import login_required
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config["MONGO_URI"] = "mongodb://aniket:Aniketsprx077@cluster0-shard-00-00-uugt8.mongodb.net:27017,cluster0-shard-00-01-uugt8.mongodb.net:27017,cluster0-shard-00-02-uugt8.mongodb.net:27017/main?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority"
-    mongo = PyMongo(app)
+    
     app.config.from_mapping(
         SECRET_KEY='aniket',
         DATABASE=os.path.join(app.instance_path, 'app.sqlite'),
@@ -34,16 +33,20 @@ def create_app(test_config=None):
 
     from . import auth
     from . import exam
+    from . import plan
     app.register_blueprint(auth.auth_blueprint)
     app.register_blueprint(exam.exam_blueprint)
+    app.register_blueprint(plan.plan_blueprint)
 
     # a simple page that says hello
     @app.route('/')
-    @login_required
     def index():
-        user = None
-        if 'username' in session:
-            user = session['username']
-        return render_template("index.html", user=user)
-
+        # user = None
+        # if 'email' in session:
+        #     user = session['email']
+        return render_template("index.html")
+        
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template('404.html')
     return app

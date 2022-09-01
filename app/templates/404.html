@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}404{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex flex-col justify-center">
+    
+    <div class="text-white text-[5vw]">sorry page not found.<br> <a href="{{ url_for('index') }}"> <span class="text-pred">go back.</span></a></div>
+  </div>
+{% endblock %}

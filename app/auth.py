@@ -23,13 +23,23 @@ def login():
 
         if user is None:
             error = 'Incorrect email.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            flash(error)
+            return render_template('auth/login.html')
 
+
+        if not check_password_hash(user['password'], password):
+            error = 'Incorrect password.'
+            flash(error)
+            return render_template('auth/login.html')
+
+    
         if error is None:
             session.clear()
             session['user_id'] = user['id']
             session['email'] = user['email']
+            session['name'] = user['name']
+            if(user['configured']==0):
+                return redirect(url_for('plan.configure'))
             return redirect(url_for('index'))
 
         flash(error)
@@ -41,6 +51,9 @@ def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        name = request.form['name']
+
+
         db = get_db()
         error = None
 
@@ -52,8 +65,8 @@ def signup():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (email, password) VALUES (?, ?)",
-                    (email, generate_password_hash(password)),
+                    "INSERT INTO user (email, password, name) VALUES (?, ?, ?)",
+                    (email, generate_password_hash(password),name),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -86,8 +99,18 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            error="login required"
+            flash(error)
             return redirect(url_for('auth.login'))
+        return view(**kwargs)
 
+    return wrapped_view
+
+def configured_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if(g.user['configured']==0):
+            return redirect(url_for('plan.configure'))
         return view(**kwargs)
 
     return wrapped_view
