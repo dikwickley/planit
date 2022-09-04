@@ -16,7 +16,10 @@ def pretty(d, indent=0):
          pretty(value, indent+1)
       else:
          print('\t' * (indent+1) + str(value))
-
+"""
+to add more exams
+http://127.0.0.1:5000/exam/GCS/1
+"""
 @exam_blueprint.route('/<code>/<id>', methods=['GET'])
 def get_all_exam(code,id):
     if request.method == 'GET':

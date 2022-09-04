@@ -5,8 +5,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full h-full flex flex-col justify-center">
-YOUR PLAN here
+<div class="w-full h-full flex flex-col  y-scroll">
+
+  <div class="h-[80%] text-xl">
+    <div class="text-pred text-7xl mb-7">{{ exam_name }}</div>
+    {% for week_key in plan_data %}
+      <div class="my-3">
+        <div class="text-pgreen text-4xl">{{week_key}}</div>
+        {% for topic_data in plan_data[week_key] %}
+          <div class="text-white pl-7"> <input type="checkbox" /> {{topic_data['subject_name']}} | {{topic_data['topic_name']}}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
 </div>
   
 {% endblock %}

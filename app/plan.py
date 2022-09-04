@@ -1,5 +1,6 @@
 from audioop import reverse
 from datetime import datetime
+from datetime import timedelta
 import functools
 import json
 import math
@@ -7,6 +8,7 @@ from this import s
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+from app import exam
 from app.auth import configured_required, login_required
 
 from app.db import get_db
@@ -53,7 +55,58 @@ def constant_study_function(number_of_topics, number_of_weeks):
 @plan_blueprint.route('/', methods=['GET','POST'])
 @configured_required
 def show_plan():
-    return render_template('plan/index.html')
+    db = get_db()
+
+    email = session['email']
+
+    print(f"email {email}")
+
+    plan = db.execute(
+        "SELECT * FROM plan \
+        WHERE email = ?",(email,)
+    ).fetchone()
+
+    print(f"plan id {plan}")
+
+
+    exam_name =  plan['exam']
+    start_date = plan['start_date']
+    # start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    
+
+    plan_in_db = db.execute(
+        "SELECT * FROM plan_details\
+            WHERE plan_id = ?",(str(plan['id']),)
+    ).fetchall()
+
+    print(f"plan in db {plan_in_db}")
+
+    plan_data = {}
+
+    for plan_row in plan_in_db:
+
+        week_number = int(plan_row['week_number'])
+        week_start = (start_date + timedelta(days=(week_number-1)*7)).strftime("%d %B, %Y")
+        week_end = (start_date + timedelta(days=(week_number)*7)).strftime("%d %B, %Y")
+        week_key = f"{week_start} to {week_end}"
+
+        if week_key not in plan_data:
+            plan_data[week_key] = [
+                {
+                    "subject_name": plan_row["subject_name"],
+                    "topic_name": plan_row["topic_name"]
+                }
+            ]
+        else:
+            plan_data[week_key].append(
+                {
+                    "subject_name": plan_row["subject_name"],
+                    "topic_name": plan_row["topic_name"]
+                }
+            )
+
+    print(plan_data)
+    return render_template('plan/index.html', plan_data=plan_data, exam_name=exam_name)
 
 
 @plan_blueprint.route('/configure', methods=['GET','POST'])
@@ -83,6 +136,14 @@ def configure():
         end_date = request.form['end_date']
         plan_type = request.form['plan_type']
 
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        if(start_date > end_date):
+            error = "end date can not be earlier than start date"
+            flash(error)
+            return redirect(url_for('plan.configure'))
+
         print(f"exam_id {exam_id}")
         #get exam name
         
@@ -106,8 +167,7 @@ def configure():
             WHERE email = ?",(email,)
         ).fetchone()['id']
 
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        
 
         #count total topics in an exam
         topic_count = db.execute(
@@ -120,7 +180,12 @@ def configure():
         print(topic_count)
         print(week_count)
 
-        plan_distribution = decreasing_study_function(topic_count, week_count)
+        if(plan_type == 'increasing'):
+            plan_distribution = increasing_study_function(topic_count, week_count)
+        elif (plan_type == 'decreasing'):
+            plan_distribution = decreasing_study_function(topic_count, week_count)
+        elif (plan_type == 'constant'):
+            plan_distribution = constant_study_function(topic_count, week_count)
 
         print(plan_distribution)
 
