@@ -9,14 +9,16 @@
     <form method="post" class="flex flex-col">
         <div class="text-white">choose exam</div>
         <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
-            <option value="6">GATE Computer Science</option>
-            <option value="7">GATE Electronics and Communication</option>
-            <option value="8">GATE Mechanical</option>
+            <option value="1">GATE Computer Science</option>
+            <option value="7" disabled>GATE Electronics and Communication</option>
+            <option value="8" disabled>GATE Mechanical</option>
         </select>
         <div class="text-white">start date</div>
         <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="start date" name="start_date" id="start_date" required>
         <div class="text-white">end date</div>
         <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="end date" name="end_date" id="end_date" required>
+        <div class="text-white">daily hours</div>
+        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="number" value=8 placeholder="daily hours" name="daily_hours" id="daily_hours" required>
         <div class="text-white">plan type</div>
         <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="plan_type" id="plan_type">
             <option value="increasing">increasing</option>

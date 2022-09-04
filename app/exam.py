@@ -1,5 +1,6 @@
 import functools
 import json
+import random
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -31,9 +32,10 @@ def get_all_exam(code,id):
             topics = syllabus[key]
             for topic in topics:
                 print(topic[3], topic[1])
+                hours = random.randint(1, 5)
                 db.execute(
-                    "INSERT INTO exam_details (exam_id, topic_name, subject_name) VALUES(?,?,?)",
-                    (id, topic[1], topic[3])
+                    "INSERT INTO exam_details (exam_id, topic_name, subject_name, required_hours) VALUES(?,?,?,?)",
+                    (id, topic[1], topic[3], hours)
                 )
                 db.commit()
         return syllabus

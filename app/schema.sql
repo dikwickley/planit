@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS plan;
 DROP TABLE IF EXISTS plan_details;
 DROP TABLE IF EXISTS exam;
--- DROP TABLE IF EXISTS exam_details;
+DROP TABLE IF EXISTS exam_details;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,6 +26,7 @@ CREATE TABLE plan_details (
   week_number INTEGER,
   subject_name TEXT,
   topic_name TEXT,
+  required_hours INTEGER,
   completed boolean
 );
 
@@ -38,5 +39,8 @@ CREATE TABLE exam_details (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   exam_id INTEGER,
   topic_name TEXT,
-  subject_name TEXT
+  subject_name TEXT,
+  required_hours INTEGER
 );
+
+INSERT INTO exam (exam_name) VALUES("gate computer science")

@@ -12,8 +12,16 @@
     {% for week_key in plan_data %}
       <div class="my-3">
         <div class="text-pgreen text-4xl">{{week_key}}</div>
-        {% for topic_data in plan_data[week_key] %}
-          <div class="text-white pl-7"> <input type="checkbox" /> {{topic_data['subject_name']}} | {{topic_data['topic_name']}}</div>
+        <div class="flex flex row p-2">
+          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">total hours:  {{plan_data[week_key]["total_hours"]}}</div>
+          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">daily hours:  {{plan_data[week_key]["hours_per_day"]}}</div>
+        </div>
+        {% for topic_data in plan_data[week_key]["data"] %}
+          <div class="text-white pl-7 flex items-center"> 
+            <input type="checkbox" /> 
+            <div class="mx-2">{{topic_data['subject_name']}} | {{topic_data['topic_name']}}</div> 
+            <div class="px-2 flex rounded-lg bg-white text-pblack text-sm font-bold mx-1">{{topic_data['hours']}}</div>
+          </div>
         {% endfor %}
       </div>
     {% endfor %}
