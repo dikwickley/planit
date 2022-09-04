@@ -51,6 +51,7 @@ def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        confirm_password =  request.form['confirm_password']
         name = request.form['name']
 
 
@@ -60,7 +61,11 @@ def signup():
         if not email:
             error = 'email is required.'
         elif not password:
-            error = 'Password is required.'
+            error = 'password is required.'
+        elif len(password) < 8:
+            error = 'password too small'
+        elif password is not confirm_password:
+            error = 'password should match'
 
         if error is None:
             try:
