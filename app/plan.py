@@ -166,18 +166,12 @@ def configure():
         print(f"exam name {exam_name}")
 
         #make a plan
-        res = db.execute(
+        plan_id = db.execute(
             "INSERT INTO plan (email,exam,start_date,end_date) \
                 VALUES(?,?,?,?)",
                 (email,exam_name,start_date,end_date)
-        )
+        ).lastrowid
         
-
-        #get plan id
-        plan_id = db.execute(
-            "SELECT * FROM plan \
-            WHERE email = ?",(email,)
-        ).fetchone()["id"]
 
         print(f"plan {plan_id}")
 

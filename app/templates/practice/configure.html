@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}config <br /> test{% endblock %}</h1>
+  <h1>{% block title %}config test{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -15,16 +15,17 @@
           <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
           {% endfor%}
         </select>
-        <div class="text-white">number of questions</div>
-        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" type="number" autocomplete="off" name="number_of_questions" placeholder="number_of_questions" id="number_of_questions" required>
+
         <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit" value="choose topics">
     </form>
     {% endif %}
     {% if request.method == "POST" %}
-    <form method="post" class="flex flex-col   y-scroll">
+    <form method="post" action = "{{url_for('practice.make_test')}}"class="flex flex-col   y-scroll">
       <div class="h-[80%] text-xl">
         <div class="text-pred text-7xl mb-7">{{ exam_name }}</div>
       </div>
+        <div class="text-white">number of questions</div>
+        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" value="10" type="number" min="10" autocomplete="off" name="number_of_questions" placeholder="number of questions" id="number_of_questions" required>
         <div class="text-white">choose topics</div>
         {% for subject in topics %}
         <div>
@@ -34,12 +35,13 @@
           <div>
             {% for topic in topics[subject] %}
               <div class="flex flex-row items-center">
-                <input class="mr-3 ml-8 w-4 h-4 subject_{{topic_keys.index(subject)}}" type="checkbox" name="test_topics"/><div class="text-white">{{topic["topic_name"]}} </div>
+                <input class="mr-3 ml-8 w-4 h-4 subject_{{topic_keys.index(subject)}}" type="checkbox" value="{{topic['topic_id']}}" name="test_topics"/><div class="text-white">{{topic["topic_name"]}} </div>
               </div>
             {% endfor %}
           </div>
         </div>
         {% endfor%}
+        
         <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit" value="make test">
     </form>
     {% endif %}

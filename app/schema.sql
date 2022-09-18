@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS plan;
 DROP TABLE IF EXISTS plan_details;
-DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS test;
+DROP TABLE IF EXISTS test_details;
+-- DROP TABLE IF EXISTS questions;
 -- DROP TABLE IF EXISTS exam;
 -- DROP TABLE IF EXISTS exam_details;
 
@@ -57,10 +59,11 @@ CREATE TABLE IF NOT EXISTS questions (
 
 CREATE TABLE IF NOT EXISTS test (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL,
   start_time TEXT,
   end_time TEXT,
   number_of_questions INTEGER,
-  marks INTEGER,
+  marks INTEGER DEFAULT 0,
   is_submitted boolean DEFAULT 0
 );
 
