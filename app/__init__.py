@@ -34,9 +34,11 @@ def create_app(test_config=None):
     from . import auth
     from . import exam
     from . import plan
+    from . import practice
     app.register_blueprint(auth.auth_blueprint)
     app.register_blueprint(exam.exam_blueprint)
     app.register_blueprint(plan.plan_blueprint)
+    app.register_blueprint(practice.practice_blueprint)
 
     # a simple page that says hello
     @app.route('/')

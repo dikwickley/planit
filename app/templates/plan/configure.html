@@ -9,9 +9,9 @@
     <form method="post" class="flex flex-col">
         <div class="text-white">choose exam</div>
         <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
-            <option value="1">GATE Computer Science</option>
-            <option value="7" disabled>GATE Electronics and Communication</option>
-            <option value="8" disabled>GATE Mechanical</option>
+          {% for exam in exams %}
+          <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
+          {% endfor%}
         </select>
         <div class="text-white">start date</div>
         <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="start date" name="start_date" id="start_date" required>

@@ -277,4 +277,14 @@ def configure():
             error = "plan already created"
             flash(error)
             return redirect(url_for('plan.show_plan'))
-        return render_template('plan/configure.html')
+        
+        exams_in_db = db.execute(
+            "SELECT * FROM exam"
+        ).fetchall()
+
+        exams = []
+
+        for exam in exams_in_db:
+            exams.append({"id": exam["id"], "exam_name": exam["exam_name"]})
+        print(exams)
+        return render_template('plan/configure.html',exams=exams)
