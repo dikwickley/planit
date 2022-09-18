@@ -78,6 +78,7 @@
       <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
         practice
       </div>
+      {% if "name" not in session %}
       <a href="{{ url_for('auth.signup') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           signup
@@ -88,6 +89,8 @@
           login
         </div>
       </a>
+      {% endif %}
+      {% if "name" in session %}
       <a href="{{ url_for('index') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           account
@@ -98,6 +101,7 @@
           logout
         </div>
       </a>
+      {% endif %}
     </div>
     
   </div>
@@ -133,9 +137,9 @@ VANTA.GLOBE({
   //Add the id of your tag with the # before
     el: "#anim_globe",
   //All the controles for the user
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: true,
+    mouseControls: false,
+    touchControls: false,
+    gyroControls: false,
   //Control the min-size of the animation
     minHeight: 500.00,
     minWidth: 500.00,

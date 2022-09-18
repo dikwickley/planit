@@ -1,10 +1,7 @@
 from audioop import reverse
 from datetime import datetime
 from datetime import timedelta
-import functools
-import json
 import math
-from this import s
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
