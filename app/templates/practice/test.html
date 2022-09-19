@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}test{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex flex-row items-center">
+    <div class="w-[50%] h-full flex flex-col justify-center">
+        <div class="text-white text-2xl">
+            <span class="text-4xl">{{sequence_number}}. </span> {{question_statement}}
+        </div>
+        <form method="post" class="ml-4 text-2xl text-pgreen p-4" action="{{url_for('practice.save_answer')}}" >
+            <input type="hidden" name="test_id" value={{test_id}} />
+            <input type="hidden" name="sequence_number" value={{sequence_number}} />
+
+            <div class="flex items-center">
+                {% if sequence_number in answered_questions and answered_questions[sequence_number] == "a" %} 
+                    <input type="radio" class="h-5 w-5 mr-3" id="a" name="answer" value="a" checked>
+                {% else %}
+                    <input type="radio" class="h-5 w-5 mr-3" id="a" name="answer" value="a" >
+                {%endif%}
+                <label for="a">{{options['a']}}</label><br>
+            </div>
+
+            <div class="flex items-center">
+                {% if sequence_number in answered_questions and answered_questions[sequence_number] == "b" %} 
+                    <input type="radio" class="h-5 w-5 mr-3" id="b" name="answer" value="b" checked>
+                {% else %}
+                    <input type="radio" class="h-5 w-5 mr-3" id="b" name="answer" value="b" >
+                {%endif%}
+                <label for="b">{{options['b']}}</label><br>
+            </div>
+            <div class="flex items-center">
+                {% if sequence_number in answered_questions and answered_questions[sequence_number] == "c" %} 
+                    <input type="radio" class="h-5 w-5 mr-3" id="c" name="answer" value="c" checked>
+                {% else %}
+                    <input type="radio" class="h-5 w-5 mr-3" id="c" name="answer" value="c" >
+                {%endif%}
+                <label for="c">{{options['c']}}</label><br>
+            </div>
+            <div class="flex items-center">
+                {% if sequence_number in answered_questions and answered_questions[sequence_number] == "d" %} 
+                    <input type="radio" class="h-5 w-5 mr-3" id="d" name="answer" value="d" checked>
+                {% else %}
+                    <input type="radio" class="h-5 w-5 mr-3" id="d" name="answer" value="d" >
+                {%endif%}
+                <label for="d">{{options['d']}}</label><br>
+            </div>
+            <div class="flex flex-row my-4 mx-auto">
+                <a class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  href="{{url_for('practice.show_test',  test_id=test_id, sequence_number=(sequence_number-1))}}">
+                    previous
+                </a>
+                <input class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  type="submit" value="save & next">
+                <a class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  href="{{url_for('practice.show_test',  test_id=test_id, sequence_number=(sequence_number+1))}}">
+                    next
+                </a>
+            </div>
+        
+        </form>
+    </div>
+    <div class="w-[50%] flex flex-col items-center justify-center">
+
+          
+        <div class="w-[70%]  flex flex-row flex-wrap items-center">
+            {% for x in range(number_of_questions) %}
+            <a class="cursor-pointer" href="{{url_for('practice.show_test',  test_id=test_id, sequence_number=(x+1))}}">
+                {% if x+1 == sequence_number %} 
+                <div class="bg-white text-pblack h-[5vh] w-[5vh] text-center text-[3.5vh] m-1">{{x+1}}</div>
+                {% elif x+1 not in answered_questions %}
+                <div class="bg-pred text-white h-[5vh] w-[5vh] text-center text-[3.5vh] m-1">{{x+1}}</div>
+                {% else %}
+                <div class="bg-pgreen text-pblack h-[5vh] w-[5vh] text-center text-[3.5vh] m-1">{{x+1}}</div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div>
+            <form action="{{url_for('practice.submit_test')}}" method="post">
+                <input type="hidden" name="test_id" value={{test_id}}/>
+                <button  class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                    submit test
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

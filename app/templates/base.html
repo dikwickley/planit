@@ -22,6 +22,8 @@
 </script>
 <style>
 
+
+
 .y-scroll {
   overflow-y: scroll; /* Add the ability to scroll */
 }
@@ -64,7 +66,7 @@
      
     </div>
 
-    <div class="flex flex-col my-4 mr-[15vw]">
+    <div class="flex flex-col my-4 mr-[10vw]">
       <a href="{{ url_for('index') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           home
@@ -93,7 +95,7 @@
       </a>
       {% endif %}
       {% if "name" in session %}
-      <a href="{{ url_for('index') }}">
+      <a href="{{ url_for('account.show_account',screen='profile') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           account
         </div>
@@ -132,28 +134,30 @@
 
 </div>
 
-<script src="three.r119.min.js" defer></script>
-<script src="vanta.globe.min.js" defer></script>
+
+
+<!-- <script src="three.r119.min.js" defer></script>
+<script src="vanta.globe.min.js" defer></script> -->
 <script> 
-VANTA.GLOBE({
-  //Add the id of your tag with the # before
-    el: "#anim_globe",
-  //All the controles for the user
-    mouseControls: false,
-    touchControls: false,
-    gyroControls: false,
-  //Control the min-size of the animation
-    minHeight: 500.00,
-    minWidth: 500.00,
-  //Modify the sizing
-    scale: 1.00,
-    scaleMobile: 1.00,
-    size:0.90,
-  //Customise the colors
-    // color: 0x40db33,
-    // color2: 0x4f17ef,
-    // backgroundColor: 0xd83423
-  })
+// VANTA.GLOBE({
+//   //Add the id of your tag with the # before
+//     el: "#anim_globe",
+//   //All the controles for the user
+//     mouseControls: false,
+//     touchControls: false,
+//     gyroControls: false,
+//   //Control the min-size of the animation
+//     minHeight: 500.00,
+//     minWidth: 500.00,
+//   //Modify the sizing
+//     scale: 1.00,
+//     scaleMobile: 1.00,
+//     size:0.90,
+//   //Customise the colors
+//     // color: 0x40db33,
+//     // color2: 0x4f17ef,
+//     // backgroundColor: 0xd83423
+//   })
 </script>
 
 </html>

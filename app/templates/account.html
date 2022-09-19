@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}account{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex justify-end">
+    <div>
+        <a href="{{ url_for('account.show_account',screen='profile') }}">
+            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                profile
+            </button>
+        </a>
+        <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
+            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                plan dashboard
+            </button>
+        </a>
+        <a href="{{ url_for('account.show_account',screen='test-dashboard') }}">
+            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                test dashboard
+            </button>
+        </a>
+        <a href="{{ url_for('account.show_account',screen='settings') }}">
+            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                settings
+            </button>
+        </a>
+    </div>
+</div>
+{% endblock %}

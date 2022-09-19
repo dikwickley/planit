@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS test (
 
 CREATE TABLE IF NOT EXISTS test_details (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sequence_number INTEGER,
   test_id INTEGER,
   question_id INTEGER,
   answer CHAR

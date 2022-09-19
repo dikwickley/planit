@@ -11,6 +11,106 @@ from app.db import get_db
 
 practice_blueprint = Blueprint('practice', __name__, url_prefix='/practice')
 
+@practice_blueprint.route('/save-answer', methods=['POST'])
+@login_required
+def save_answer():
+    db = get_db()
+    test_id = request.form['test_id']
+    sequence_number = int(request.form['sequence_number'])
+
+    answer = request.form.get('answer')
+
+    #save this answer in test
+    print("save answer", answer)
+    db.execute("UPDATE test_details \
+        SET answer=?\
+            WHERE test_id = ? AND sequence_number = ?",(answer, test_id, sequence_number))
+    db.commit()
+    return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=sequence_number+1))
+    
+@practice_blueprint.route('/submit-test', methods=["POST"])
+@login_required
+def submit_test():
+    db = get_db()
+    test_id = request.form.get('test_id')
+
+    return test_id
+
+@practice_blueprint.route('/test/<test_id>/<sequence_number>', methods=['GET','POST'])
+@login_required
+def show_test(test_id, sequence_number):
+    db = get_db()
+
+    email = session['email']
+
+    test_in_db = db.execute("SELECT * FROM test\
+        where id = ?",(test_id,)).fetchone()
+
+    if test_in_db is None:
+        error = "no test exist"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+    if test_in_db['is_submitted'] == True:
+        error = "test already submitted"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+
+    if test_in_db['email'] != email:
+        error = "no auth to access test"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+    
+    number_of_questions = test_in_db['number_of_questions']
+    
+    #check for date time condition
+    # end_time = test_in_db['end_time']
+    # print('end_time',end_time)
+
+    if int(sequence_number) == 0:
+        error = "can't move previous"
+        flash(error)
+        return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=1))
+
+    if int(sequence_number) > (number_of_questions):
+        error = "moved to start of test"
+        flash(error)
+        return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=1))
+
+    test_details_in_db = db.execute("SELECT * FROM test_details \
+        WHERE test_id = ? AND sequence_number = ?",(test_id, sequence_number)).fetchone()
+
+    
+    answered_questions = {}
+    answered_questions_in_db = db.execute("SELECT * FROM test_details\
+        WHERE answer is not NULL AND test_id = ? ",(test_id,)).fetchall()
+
+    for answer in answered_questions_in_db:
+        answered_questions[answer["sequence_number"]] = answer['answer']
+
+    if test_details_in_db is None:
+        error = "question does not exist"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+    question_id = test_details_in_db["question_id"]
+
+    
+    print("question_id",question_id)
+    
+    question_in_db = db.execute("SELECT * FROM questions\
+        WHERE id = ? ",(question_id,)).fetchone()
+    
+    question_statement = question_in_db['question_statement']
+    options = {
+        'a': question_in_db['a'],
+        'b': question_in_db['b'],
+        'c': question_in_db['c'],
+        'd': question_in_db['d'],
+    }
+    return render_template('practice/test.html',sequence_number=int(sequence_number), question_statement=question_statement, options=options, test_id=test_id, number_of_questions=number_of_questions, answered_questions=answered_questions)
+    # return [sequence_number, question_statement, options, test_id, number_of_questions]
 
 @practice_blueprint.route('/config', methods=['GET','POST'])
 @login_required
@@ -60,6 +160,11 @@ def make_test():
     db = get_db()
     if request.method == "POST":
         test_topics = request.form.getlist('test_topics')
+        
+        if len(test_topics)<1:
+            error = "too less topics"
+            flash(error)
+            return redirect(url_for('practice.config_test'))
         number_of_questions = int(request.form["number_of_questions"])
         minutes_per_question = 3
 
@@ -77,13 +182,6 @@ def make_test():
                 VALUES(?,?,?,?,?)",
                 (email, start_time,end_time,number_of_questions, 0 )
         ).lastrowid
-        
-
-        #get test id
-        # test_id = db.execute(
-        #     "SELECT last_insert_rowid()"
-        # )
-
 
 
         print("test_id",test_id)
@@ -98,13 +196,15 @@ def make_test():
     
         random.shuffle(questions)
         questions = questions[0:number_of_questions]
-
+        sequence_number = 1
         for question_id in questions:
 
             db.execute(
-                "INSERT INTO test_details(test_id,question_id)\
-                    VALUES(?,?)",(test_id, question_id,)
+                "INSERT INTO test_details(sequence_number,test_id,question_id)\
+                    VALUES(?,?,?)",(sequence_number, test_id, question_id,)
             )
 
+            sequence_number += 1
+
         db.commit()
-        return questions
+        return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=1))

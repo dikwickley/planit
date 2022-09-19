@@ -50,6 +50,7 @@ def constant_study_function(hours, number_of_weeks):
 
 
 @plan_blueprint.route('/', methods=['GET','POST'])
+@login_required
 @configured_required
 def show_plan():
     db = get_db()
