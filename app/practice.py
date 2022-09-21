@@ -11,6 +11,75 @@ from app.db import get_db
 
 practice_blueprint = Blueprint('practice', __name__, url_prefix='/practice')
 
+@practice_blueprint.route('/result/<test_id>', methods=['POST','GET'])
+@login_required
+def show_result(test_id):
+    db = get_db()
+
+    test_questions = db.execute('SELECT question_id FROM test_details\
+        WHERE test_id = ?',(test_id,)).fetchall()
+    
+    # print(test_questions['question_id'])
+    test_question_list = []
+    for question in test_questions:
+        test_question_list.append(question['question_id'])
+
+    print(test_question_list)
+
+    # return test_question_list
+
+    # question_answers_in_db = db.execute('SELECT * FROM questions\
+    #     WHERE id in ?',(tuple(test_question_list),))
+    questions_in_db = db.execute(
+            "SELECT * FROM questions\
+                WHERE id in {}".format(tuple(test_question_list))
+        ).fetchall()
+
+    question_answers = {}
+
+    for q_a in questions_in_db:
+        question_answers[q_a['id']] = {
+            "statement" : q_a['question_statement'],
+            "answer" : q_a['answer'],
+            "option_a" : q_a['a'],
+            "option_b" : q_a['b'],
+            "option_c" : q_a['c'],
+            "option_d" : q_a['d']
+        }
+
+    # return question_answers
+
+    right_answers = []
+    wrong_answers = []
+    skipped_answers = []
+
+    test_details_in_db = db.execute('SELECT * FROM test_details\
+        WHERE test_id = ?',(test_id,)).fetchall()
+
+    for test_detail in test_details_in_db:
+        if(test_detail['answer'] is None):
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = None
+            skipped_answers.append(answer)
+            continue
+
+        if(test_detail['answer'] == test_detail['question_id']):
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = test_detail['answer']
+            right_answers.append(answer)
+        else:
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = test_detail['answer']
+            wrong_answers.append(answer)
+
+
+    return {
+        "right": right_answers,
+        "wrong": wrong_answers,
+        "skipped": skipped_answers
+    }
+    # for test_details in  
+
 @practice_blueprint.route('/save-answer', methods=['POST'])
 @login_required
 def save_answer():
