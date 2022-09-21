@@ -60,7 +60,7 @@
       </div>
       <div class="text-white text-[1.5vw] text-left m-5">
         {% if "name" in session %}
-          hello, {{session['name']}}
+          Hello, {{session['name']}}
           {% endif %}
       </div>
      
@@ -69,40 +69,40 @@
     <div class="flex flex-col my-4 mr-[10vw]">
       <a href="{{ url_for('index') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          home
+          Home
         </div>
       </a>
       <a href="{{ url_for('plan.show_plan') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          plan
+          Plan
         </div>
       </a>
       <a href="{{ url_for('practice.config_test') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          practice
+          Practice
         </div>
       </a>
       {% if "name" not in session %}
       <a href="{{ url_for('auth.signup') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          signup
+          Signup
         </div>
       </a>
       <a href="{{ url_for('auth.login') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          login
+          Login
         </div>
       </a>
       {% endif %}
       {% if "name" in session %}
       <a href="{{ url_for('account.show_account',screen='profile') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          account
+          Account
         </div>
       </a>
       <a href="{{ url_for('auth.logout') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
-          logout
+          Logout
         </div>
       </a>
       {% endif %}
@@ -119,7 +119,7 @@
   </div>
 
   <div class="absolute bottom-0 right-0 text-[10vw] leading-snug text-pred">
-    plan<span class="text-white p-0 m-0">it</span>
+    PLAN<span class="text-white p-0 m-0">IT</span>
   </div>
 
   {% for message in get_flashed_messages() %}

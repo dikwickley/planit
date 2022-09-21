@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}plan{% endblock %}</h1>
+  <h1>{% block title %}Plan{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -13,8 +13,8 @@
       <div class="my-3">
         <div class="text-pgreen text-4xl">{{week_key}}</div>
         <div class="flex flex row p-2">
-          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">total hours:  {{plan_data[week_key]["total_hours"]}}</div>
-          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">min. daily hours:  {{plan_data[week_key]["hours_per_day"]}}</div>
+          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Total Hours:  {{plan_data[week_key]["total_hours"]}}</div>
+          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Min. daily hours:  {{plan_data[week_key]["hours_per_day"]}}</div>
         </div>
         {% for topic_data in plan_data[week_key]["data"] %}
           <div class="text-white pl-7 flex items-center"> 

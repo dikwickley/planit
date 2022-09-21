@@ -1,4 +1,3 @@
-from crypt import methods
 from datetime import datetime
 from datetime import timedelta
 import random

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}signup{% endblock %}</h1>
+  <h1>{% block title %}Signup{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -12,8 +12,8 @@
     <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="password" placeholder="password" name="password" id="password" required>
     <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="password" placeholder="confirm password" name="confirm_password" id="cpassword" required>
     <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack " type="submit" value="signup">
-    <div class="text-white">already have an account? <span class="text-pred">login</span></div>
-    <div class="text-white">can't remember your password? <span class="text-pred">forgot password</span></div>
+    <div class="text-white">Already have an account? <span class="text-pred">Login</span></div>
+    <div class="text-white">Can't remember your password? <span class="text-pred">Forgot password</span></div>
   </form>
 </div>
 {% endblock %}

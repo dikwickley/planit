@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}account{% endblock %}</h1>
+<h1>{% block title %}Account{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -9,22 +9,22 @@
     <div>
         <a href="{{ url_for('account.show_account',screen='profile') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                profile
+                Profile
             </button>
         </a>
         <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                plan dashboard
+                Plan dashboard
             </button>
         </a>
         <a href="{{ url_for('account.show_account',screen='test-dashboard') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                test dashboard
+                Test dashboard
             </button>
         </a>
         <a href="{{ url_for('account.show_account',screen='settings') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                settings
+                Settings
             </button>
         </a>
     </div>

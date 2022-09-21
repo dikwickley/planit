@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}test{% endblock %}</h1>
+<h1>{% block title %}Test{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -53,11 +53,11 @@
             </div>
             <div class="flex flex-row my-4 mx-auto">
                 <a class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  href="{{url_for('practice.show_test',  test_id=test_id, sequence_number=(sequence_number-1))}}">
-                    previous
+                    Previous
                 </a>
-                <input class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  type="submit" value="save & next">
+                <input class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  type="submit" value="Save & Next">
                 <a class="bg-pgreen text-pblack py-1 px-2 w-[30%] text-center m-1 cursor-pointer"  href="{{url_for('practice.show_test',  test_id=test_id, sequence_number=(sequence_number+1))}}">
-                    next
+                    Next
                 </a>
             </div>
         
@@ -81,12 +81,12 @@
         </div>
         <div class="flex">
             <button id="toggle_calculator" class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                calculator
+                Calculator
             </button>
             <form action="{{url_for('practice.submit_test')}}" method="post">
                 <input type="hidden" name="test_id" value={{test_id}}/>
                 <button  class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                    submit test
+                    Submit test
                 </button>
             </form>
         </div>
