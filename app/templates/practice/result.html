@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Result{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex flex-col   y-scroll">
+    <div class="y-scroll h-[80%] ">
+        <div class="text-5xl text-pgreen mb-4">
+            Correct Answers
+        </div>
+        {% if test_result_data['right_count'] == 0 %}
+            <div class="text-gray-500 mx-5 text-2xl" >None</div>
+        {% endif %}
+        {% for correct in test_result_data['right'] %}
+        <div class="my-4">
+            <div class="text-white text-xl w-[70%]">
+                {{correct['statement']}}
+            </div>
+            <ol class="text-white mx-5">
+                <li>a. {{correct['option_a']}}</li>
+                <li>b. {{correct['option_b']}}</li>
+                <li>c. {{correct['option_c']}}</li>
+                <li>d. {{correct['option_d']}}</li>
+            </ol>
+            <div class="flex flex-row">
+                <div class="text-pgreen mr-4">Right Answer: <span class="font-extrabold text-3xl">{{correct['answer']}} </span> </div>
+                <div class="text-pred">Your Answer: <span class="font-extrabold text-3xl">{{correct['your_answer']}} </span></div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-5xl text-pgreen mb-4 mt-7">
+            Wrong Answers
+        </div>
+        {% if test_result_data['wrong_count'] == 0 %}
+            <div class="text-gray-500 mx-5 text-2xl" >None</div>
+        {% endif %}
+        {% for correct in test_result_data['wrong'] %}
+        <div class="my-4">
+            <div class="text-white text-xl w-[70%]">
+                {{correct['statement']}}
+            </div>
+            <ol class="text-white mx-5">
+                <li>a. {{correct['option_a']}}</li>
+                <li>b. {{correct['option_b']}}</li>
+                <li>c. {{correct['option_c']}}</li>
+                <li>d. {{correct['option_d']}}</li>
+            </ol>
+            <div class="flex flex-row">
+                <div class="text-pgreen mr-4">Right Answer: <span class="font-extrabold text-3xl">{{correct['answer']}} </span> </div>
+                <div class="text-pred">Your Answer: <span class="font-extrabold text-3xl">{{correct['your_answer']}} </span></div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+        <div class="text-5xl text-pgreen mb-4 mt-7">
+            Skipped Answers
+        </div>
+        {% if test_result_data['skipped_count'] == 0 %}
+            <div class="text-gray-500 mx-5 text-2xl" >None</div>
+        {% endif %}
+        {% for correct in test_result_data['skipped'] %}
+        <div class="my-4">
+            <div class="text-white text-xl w-[70%]">
+                {{correct['statement']}}
+            </div>
+            <ol class="text-white mx-5">
+                <li>a. {{correct['option_a']}}</li>
+                <li>b. {{correct['option_b']}}</li>
+                <li>c. {{correct['option_c']}}</li>
+                <li>d. {{correct['option_d']}}</li>
+            </ol>
+            <div class="flex flex-row">
+                <div class="text-pgreen mr-4">Right Answer: <span class="font-extrabold text-3xl">{{correct['answer']}} </span> </div>
+                <div class="text-pred">Your Answer: <span class="font-extrabold text-3xl">{{correct['your_answer']}} </span></div>
+            </div>
+        </div>
+        {% endfor %}
+            
+
+    </div>
+    <div class="flex flex-col mt-2">
+        <div class="flex flex-row text-center mb-2  text-pgreen">
+
+            <div class=" text-5xl">
+                Correct {{test_result_data['right_count']}}
+            </div>
+        </div>
+        <div class="flex flex-row text-center mb-2 text-pred">
+
+            <div class=" text-5xl">
+                Incorrect {{test_result_data['wrong_count']}}
+            </div>
+        </div>
+        <div class="flex flex-row text-center mb-2 text-white">
+
+            <div class=" text-5xl">
+                Skipped {{test_result_data['skipped_count']}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

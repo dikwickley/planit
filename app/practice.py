@@ -11,7 +11,7 @@ from app.db import get_db
 
 practice_blueprint = Blueprint('practice', __name__, url_prefix='/practice')
 
-@practice_blueprint.route('/result/<test_id>', methods=['POST','GET'])
+@practice_blueprint.route('/result/<test_id>/', methods=['POST','GET'])
 @login_required
 def show_result(test_id):
     db = get_db()
@@ -63,7 +63,7 @@ def show_result(test_id):
             skipped_answers.append(answer)
             continue
 
-        if(test_detail['answer'] == test_detail['question_id']):
+        if(test_detail['answer'] == question_answers[test_detail['question_id']]['answer']):
             answer = question_answers[test_detail['question_id']]
             answer['your_answer'] = test_detail['answer']
             right_answers.append(answer)
@@ -73,12 +73,17 @@ def show_result(test_id):
             wrong_answers.append(answer)
 
 
-    return {
+    test_result_data =  {
         "right": right_answers,
         "wrong": wrong_answers,
-        "skipped": skipped_answers
+        "skipped": skipped_answers,
+        "right_count": len(right_answers),
+        "wrong_count": len(wrong_answers),
+        "skipped_count": len(skipped_answers)
     }
     # for test_details in  
+
+    return render_template('practice/result.html',test_result_data=test_result_data)
 
 @practice_blueprint.route('/save-answer', methods=['POST'])
 @login_required
@@ -103,7 +108,7 @@ def submit_test():
     db = get_db()
     test_id = request.form.get('test_id')
 
-    return test_id
+    return redirect(url_for('practice.show_result',test_id=test_id))
 
 @practice_blueprint.route('/test/<test_id>/<sequence_number>', methods=['GET','POST'])
 @login_required
