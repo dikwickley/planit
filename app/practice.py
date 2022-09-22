@@ -150,7 +150,10 @@ def show_test(test_id, sequence_number):
     if int(sequence_number) > (number_of_questions):
         error = "moved to start of test"
         flash(error)
-        return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=1))
+        unanswered_questions_in_db = db.execute("SELECT count(*) as skipped_count FROM test_details\
+        WHERE answer is NULL AND test_id = ? ",(test_id,)).fetchone()
+        skipped_count = unanswered_questions_in_db['skipped_count']
+        return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=1, submit_flag=True, skipped_count=skipped_count))
 
     test_details_in_db = db.execute("SELECT * FROM test_details \
         WHERE test_id = ? AND sequence_number = ?",(test_id, sequence_number)).fetchone()

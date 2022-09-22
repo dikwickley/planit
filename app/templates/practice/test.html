@@ -85,7 +85,7 @@
             </button>
             <form action="{{url_for('practice.submit_test')}}" method="post">
                 <input type="hidden" name="test_id" value={{test_id}}/>
-                <button  class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                <button id="submit_test"  class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                     Submit test
                 </button>
             </form>
@@ -96,6 +96,22 @@
         let calculator_is_visible = false;
     
         window.onload = function() {
+
+
+        const submit_flag = getParameterByName('submit_flag')
+        const skipped_count = getParameterByName('skipped_count')
+
+        console.log(submit_flag)
+
+        if(submit_flag=="True"){
+            var content = confirm(`You have reached end of test. Would like to submit? \n ${skipped_count} questions are unanswered.`); // The "hello" means to show the following text
+            if (content === true) {
+                document.getElementById('submit_test').click()
+            } else {
+            // Do whatever if the user clicks cancel.
+            }
+        }
+
         document.getElementById('calculator').style.display = 'none'
         };
 
@@ -107,6 +123,15 @@
             }
             calculator_is_visible = !calculator_is_visible
         });
+
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
     
         // function toggleCalculator(){
         //     console.log("hi")
