@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}admin{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex flex-col justify-center">
+    {% if request.method == "GET" %}
+    <form method="post" class="flex flex-col">
+        <div class="text-white">Choose exam</div>
+        <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
+          {% for exam in exams %}
+          <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
+          {% endfor%}
+        </select>
+
+        <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit" value="download">
+    </form>
+    {% endif %}
+    
+</div>
+{% endblock %}
