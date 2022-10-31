@@ -12,6 +12,12 @@ from app.db import get_db
 
 account_blueprint = Blueprint('account',__name__, url_prefix="/account")
 
+def trim_string(s: str, limit: int, ellipsis='…') -> str:
+    s = s.strip()
+    if len(s) > limit:
+        return s[:limit-1].strip() + ellipsis
+    return s
+
 @account_blueprint.route('/<screen>',methods=['GET', 'POST'])
 @login_required
 def show_account(screen):
@@ -85,8 +91,45 @@ def show_account(screen):
             date_answers['skipped'][times[0]] = times[1]
 
         print(date_answers)
+
+
+        topic_answer = {}
+
+        topic_answer['right'] = []
+        topic_answer['wrong'] = []
+        topic_answer['skipped'] = []
         
-        return render_template('account.html', screen=screen, completed_tests=completed_tests, uncompleted_tests=uncompleted_tests, total_answer=json.dumps(total_answer), date_answers=json.dumps(date_answers))
+
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+            result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
+                WHERE email=? AND result_details.result=1 GROUP BY topic_name",(email,))
+        for topic in result_topics_in_db:
+            topic_answer['right'].append({
+                "topic_name": topic['tn'],
+                "topic_count": topic['cnt'],
+            })
+
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+            result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
+                WHERE email=? AND result_details.result=-1 GROUP BY topic_name",(email,))
+        for topic in result_topics_in_db:
+            topic_answer['wrong'].append({
+                "topic_name": topic['tn'],
+                "topic_count": topic['cnt'],
+            })
+
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+            result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
+                WHERE email=? AND result_details.result=0 GROUP BY topic_name",(email,))
+        for topic in result_topics_in_db:
+            topic_answer['skipped'].append({
+                "topic_name": topic['tn'],
+                "topic_count": topic['cnt'],
+            })
+
+        print(topic_answer)
+        
+        return render_template('account.html', screen=screen, completed_tests=completed_tests, uncompleted_tests=uncompleted_tests, total_answer=json.dumps(total_answer), date_answers=json.dumps(date_answers), topic_answer=topic_answer)
 
     elif screen == "settings":
         pass

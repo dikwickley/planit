@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS plan;
 DROP TABLE IF EXISTS plan_details;
 DROP TABLE IF EXISTS test;
 DROP TABLE IF EXISTS test_details;
-DROP TABLE IF EXISTS result_details;
+-- DROP TABLE IF EXISTS result_details;
 -- DROP TABLE IF EXISTS questions;
 -- DROP TABLE IF EXISTS exam;
 -- DROP TABLE IF EXISTS exam_details;

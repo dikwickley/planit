@@ -22,11 +22,11 @@
                 Test dashboard
             </button>
         </a>
-        <a href="{{ url_for('account.show_account',screen='settings') }}">
+        <!-- <a href="{{ url_for('account.show_account',screen='settings') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                 Settings
             </button>
-        </a>
+        </a> -->
     </div>
 
     <div class="pt-12 px-5 text-white h-full">
@@ -41,42 +41,93 @@
         {% if screen == "test-dashboard" %}
         <div class="w-full h-full flex flex-row overflow-hidden">
 
-            <ul class="w-[50%] h-full  p-2">
+
+
+
+            <ul class="w-[50%] h-full y-scroll  p-2">
 
                 <div class="text-3xl pb-3">Completed Tests</div>
 
                 {% for test in completed_tests %}
-                    <li class="flex flex-col text-xl">
-                        Test {{test.index}} {{test.date}}
-                        <div class="flex flex-row ">
-                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:  {{test.submit_time}}</div>
-                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:  {{test.marks}}/{{test.number_of_questions}}</div>
-                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_result', test_id=test.test_id)}}">view result</a>
+                <li class="flex flex-col text-xl">
+                    Test {{test.index}} {{test.date}}
+                    <div class="flex flex-row ">
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:
+                            {{test.submit_time}}</div>
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:
+                            {{test.marks}}/{{test.number_of_questions}}</div>
+                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1"
+                            href="{{url_for('practice.show_result', test_id=test.test_id)}}">view result</a>
                     </div>
-                    </li>
+                </li>
                 {% endfor %}
 
                 <div class="text-3xl py-3">Uncompleted Tests</div>
 
                 {% for test in uncompleted_tests %}
-                    <li class="flex flex-row text-2xl items-center">
-                        Test {{test.index}} {{test.date}}
-                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:  {{test.start_time}}</div>
-                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_test', test_id=test.test_id, sequence_number=1)}}">continue</a>
-                    </li>
+                <li class="flex flex-row text-2xl items-center">
+                    Test {{test.index}} {{test.date}}
+                    <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:
+                        {{test.start_time}}</div>
+                    <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1"
+                        href="{{url_for('practice.show_test', test_id=test.test_id, sequence_number=1)}}">continue</a>
+                </li>
                 {% endfor %}
-    
+
             </ul>
 
             <div class="flex flex-col items-center w-[50%] p-2 h-[75%]  y-scroll">
                 <div class="text-3xl pb-3 self-start">Analytics</div>
                 <div class="w-[70%]">
+                    <div class="text-1xl pb-3 self-start text-center">Total Distribution</div>
                     <canvas id="total_answer"></canvas>
                 </div>
-                <div class="w-[100%] py-4">
+                <div class="w-[100%] py-10">
+                    <div class="text-1xl pb-3 self-start text-center">Distribution by Date</div>
                     <canvas id="date_answer"></canvas>
                 </div>
-                
+
+                <div>
+
+                    <div class="text-1xl pb-3 self-start text-center">Distribution by Topics</div>
+
+                    <div class="flex flex-row justify-start items-start flex-wrap py-2">
+                        {% for topic in topic_answer.right %}
+                        <div class="tooltip">
+                            
+                            <div class="m-1 px-2 flex flex-row rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1">
+                                <div class="pr-1">
+                                {{topic.topic_count}} 
+                            </div>
+                                <div class="truncate">
+                                {{topic.topic_name}}
+                            </div>
+                            </div>
+                            <span class="tooltiptext">{{topic.topic_name}}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="flex flex-row justify-start items-start flex-wrap py-2">
+                        {% for topic in topic_answer.wrong %}
+                        <div class="tooltip">
+                            
+                            <div class="m-1 px-2 flex flex-row rounded-lg bg-pred text-white text-sm font-bold mx-1">
+                                <div class="pr-1">
+                                {{topic.topic_count}} 
+                            </div>
+                                <div class="truncate">
+                                {{topic.topic_name}}
+                            </div>
+                            </div>
+                            <span class="tooltiptext">{{topic.topic_name}}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    
+                </div>
+
             </div>
 
         </div>
@@ -88,31 +139,31 @@
 
 
             const total_answer_data = {
-              labels: Object.keys(total_answer),
-              datasets: [{
-                label: 'Answer Distribution',
-                backgroundColor: ['#08D9D6','#FF2E63','grey'],
-                // borderColor: 'rgb(255, 99, 132)',
-                data: Object.values(total_answer),
-              }]
+                labels: Object.keys(total_answer),
+                datasets: [{
+                    label: 'Answer Distribution',
+                    backgroundColor: ['#08D9D6', '#FF2E63', 'grey'],
+                    // borderColor: 'rgb(255, 99, 132)',
+                    data: Object.values(total_answer),
+                }]
             };
-          
+
             const total_answer_config = {
-              type: 'doughnut',
-              data: total_answer_data,
-              options: {
-                layout:{
-                    padding: 3
-                },
-                plugins:{
-                    legend:{
-                        position:"bottom",
-                        labels:{
-                            color: "white"
+                type: 'doughnut',
+                data: total_answer_data,
+                options: {
+                    layout: {
+                        padding: 3
+                    },
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                color: "white"
+                            }
                         }
                     }
                 }
-              }
             };
             const total_answer_Chart = new Chart(
                 document.getElementById('total_answer'),
@@ -121,48 +172,48 @@
 
 
             const date_answer_right_data = {
-              labels: Object.keys(date_answer.right),
-              datasets: [
-                {
-                label: 'right',
-                backgroundColor: '#08D9D6',
-                borderColor: '#08D9D6',
-                data: Object.values(date_answer.right),
-              },{
-                label: 'wrong',
-                backgroundColor: '#FF2E63',
-                borderColor: '#FF2E63',
-                data: Object.values(date_answer.wrong),
-              },{
-                label: 'skipped',
-                backgroundColor: 'grey',
-                borderColor: 'grey',
-                data: Object.values(date_answer.skipped),
-              }]
+                labels: Object.keys(date_answer.right),
+                datasets: [
+                    {
+                        label: 'right',
+                        backgroundColor: '#08D9D6',
+                        borderColor: '#08D9D6',
+                        data: Object.values(date_answer.right),
+                    }, {
+                        label: 'wrong',
+                        backgroundColor: '#FF2E63',
+                        borderColor: '#FF2E63',
+                        data: Object.values(date_answer.wrong),
+                    }, {
+                        label: 'skipped',
+                        backgroundColor: 'grey',
+                        borderColor: 'grey',
+                        data: Object.values(date_answer.skipped),
+                    }]
             };
             const date_answer_right_config = {
-              type: 'line',
-              data:  date_answer_right_data,
-              options: {
-                layout:{
-                    padding: 3
-                },
-                plugins:{
-                    legend:{
-                        position:"bottom",
-                        labels:{
-                            color: "white"
+                type: 'line',
+                data: date_answer_right_data,
+                options: {
+                    layout: {
+                        padding: 3
+                    },
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                color: "white"
+                            }
                         }
                     }
                 }
-              }
             };
             const date_answer_chart = new Chart(
                 document.getElementById('date_answer'),
                 date_answer_right_config
             );
-          </script>
-        
+        </script>
+
         {% endif %}
     </div>
 </div>
