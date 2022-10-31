@@ -1,6 +1,8 @@
+from cgi import test
 from datetime import datetime
 from datetime import timedelta
 import random
+import re
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -85,30 +87,122 @@ def show_result(test_id):
 
     return render_template('practice/result.html',test_result_data=test_result_data)
 
+    
+@practice_blueprint.route('/submit-test', methods=["POST"])
+@login_required
+def submit_test():
+    db = get_db()
+    
+    test_id = request.form['test_id']
+    submit_time = datetime.now().replace(microsecond=0).isoformat()
+    email = session['email']
+    test_in_db = db.execute("SELECT * FROM test\
+        where id = ?",(test_id,)).fetchone()
+
+    if test_in_db is None:
+        error = "no test exist"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+    if test_in_db['is_submitted'] == True:
+        error = "test already submitted"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+
+    if test_in_db['email'] != email:
+        error = "no auth to access test"
+        flash(error)
+        return redirect(url_for('practice.config_test'))
+
+    print("test_id", test_id)
+    print("submit_time", submit_time)
+
+    db.execute("UPDATE test \
+        SET is_submitted=1, submit_time=? WHERE id=?",(submit_time, test_id))
+
+    test_questions = db.execute('SELECT question_id FROM test_details\
+        WHERE test_id = ?',(test_id,)).fetchall()
+    
+    test_question_list = []
+    for question in test_questions:
+        test_question_list.append(question['question_id'])
+
+    questions_in_db = db.execute(
+            "SELECT * FROM questions\
+                WHERE id in {}".format(tuple(test_question_list))
+        ).fetchall()
+
+    question_answers = {}
+
+    for q_a in questions_in_db:
+        question_answers[q_a['id']] = {
+            "answer" : q_a['answer'],
+            "topic_id": q_a['topic_id'],
+            "question_id": q_a['id']
+        }
+    right_answers = []
+    wrong_answers = []
+    skipped_answers = []
+
+    test_details_in_db = db.execute('SELECT * FROM test_details\
+        WHERE test_id = ?',(test_id,)).fetchall()
+
+    for test_detail in test_details_in_db:
+        if(test_detail['answer'] is None):
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = None
+            skipped_answers.append(answer)
+            continue
+
+        if(test_detail['answer'] == question_answers[test_detail['question_id']]['answer']):
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = test_detail['answer']
+            right_answers.append(answer)
+        else:
+            answer = question_answers[test_detail['question_id']]
+            answer['your_answer'] = test_detail['answer']
+            wrong_answers.append(answer)
+
+    test_result_data =  {
+        "right": right_answers,
+        "wrong": wrong_answers,
+        "skipped": skipped_answers
+    }
+
+    print(test_result_data)
+    
+
+    for right_answer in right_answers:
+        db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
+            VALUES(?,?,?,?,?,?)",(email, test_id, right_answer['question_id'], right_answer['topic_id'], submit_time, 1))
+
+    for wrong_answer in wrong_answers:
+        db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
+            VALUES(?,?,?,?,?,?)",(email, test_id, wrong_answer['question_id'], wrong_answer['topic_id'], submit_time, -1))
+
+    for skipped_answer in skipped_answers:
+        db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
+            VALUES(?,?,?,?,?,?)",(email, test_id, skipped_answer['question_id'], skipped_answer['topic_id'], submit_time, 0))
+
+    db.commit()
+    return redirect(url_for('practice.show_result',test_id=test_id))
+
+
 @practice_blueprint.route('/save-answer', methods=['POST'])
 @login_required
 def save_answer():
     db = get_db()
     test_id = request.form['test_id']
     sequence_number = int(request.form['sequence_number'])
-
     answer = request.form.get('answer')
 
-    #save this answer in test
     print("save answer", answer)
     db.execute("UPDATE test_details \
         SET answer=?\
             WHERE test_id = ? AND sequence_number = ?",(answer, test_id, sequence_number))
     db.commit()
     return redirect(url_for('practice.show_test', test_id=test_id, sequence_number=sequence_number+1))
-    
-@practice_blueprint.route('/submit-test', methods=["POST"])
-@login_required
-def submit_test():
-    db = get_db()
-    test_id = request.form.get('test_id')
-
-    return redirect(url_for('practice.show_result',test_id=test_id))
 
 @practice_blueprint.route('/test/<test_id>/<sequence_number>', methods=['GET','POST'])
 @login_required
@@ -230,6 +324,28 @@ def config_test():
             exams.append({"id": exam["id"], "exam_name": exam["exam_name"]})
         print(exams)
         return render_template('practice/configure.html',exams=exams)
+
+
+@practice_blueprint.route('/demo/config', methods=["POST", "GET"])
+def config_demo_test():
+    db = get_db()
+    if request.method == "POST":
+        # fetch questions from db
+        
+
+        pass
+    else:
+        exams_in_db = db.execute(
+            "SELECT * FROM exam"
+        ).fetchall()
+
+        exams = []
+
+        for exam in exams_in_db:
+            exams.append({"id": exam["id"], "exam_name": exam["exam_name"]})
+        print(exams)
+        return render_template('practice/demo_configure.html',exams=exams)
+
 
 @practice_blueprint.route('/make', methods=["POST"])
 @login_required

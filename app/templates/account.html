@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full h-full flex justify-end">
-    <div>
-        <a href="{{ url_for('account.show_account',screen='profile') }}">
+<div class="w-full h-full flex flex-col justify-start">
+    <div class="flex justify-end">
+        <!-- <a href="{{ url_for('account.show_account',screen='profile') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                 Profile
             </button>
-        </a>
+        </a> -->
         <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                 Plan dashboard
@@ -27,6 +27,84 @@
                 Settings
             </button>
         </a>
+    </div>
+
+    <div class="pt-12 px-5 text-white h-full">
+        {% if screen == "plan-dashboard" %}
+        <div>
+
+            hi
+
+        </div>
+        {% endif %}
+
+        {% if screen == "test-dashboard" %}
+        <div class="w-full h-full flex flex-row overflow-hidden">
+
+            <ul class="w-[50%] h-full  p-2">
+
+                <div class="text-3xl pb-3">Completed Tests</div>
+
+                {% for test in completed_tests %}
+                    <li class="flex flex-col text-xl">
+                        Test {{test.index}} {{test.date}}
+                        <div class="flex flex-row ">
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:  {{test.submit_time}}</div>
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:  {{test.marks}}</div>
+                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_result', test_id=test.test_id)}}">view</a>
+                    </div>
+                    </li>
+                {% endfor %}
+
+                <div class="text-3xl py-3">Uncompleted Tests</div>
+
+                {% for test in uncompleted_tests %}
+                    <li class="flex flex-row text-2xl items-center">
+                        Test {{test.index}} {{test.date}}
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:  {{test.start_time}}</div>
+                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_test', test_id=test.test_id, sequence_number=1)}}">continue</a>
+                    </li>
+                {% endfor %}
+    
+            </ul>
+
+            <div class="w-[50%] p-2 h-[75%]  y-scroll">
+                <!-- <canvas id="myChart"></canvas> -->
+            </div>
+
+        </div>
+        <script>
+            const labels = [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+            ];
+          
+            const data = {
+              labels: labels,
+              datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [0, 10, 5, 2, 20, 30, 45],
+              }]
+            };
+          
+            const config = {
+              type: 'line',
+              data: data,
+              options: {}
+            };
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+          </script>
+        
+        {% endif %}
     </div>
 </div>
 {% endblock %}

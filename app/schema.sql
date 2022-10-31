@@ -1,11 +1,12 @@
-DROP TABLE IF EXISTS user;
+-- DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS plan;
 DROP TABLE IF EXISTS plan_details;
 DROP TABLE IF EXISTS test;
 DROP TABLE IF EXISTS test_details;
-DROP TABLE IF EXISTS questions;
-DROP TABLE IF EXISTS exam;
-DROP TABLE IF EXISTS exam_details;
+DROP TABLE IF EXISTS result_details;
+-- DROP TABLE IF EXISTS questions;
+-- DROP TABLE IF EXISTS exam;
+-- DROP TABLE IF EXISTS exam_details;
 
 CREATE TABLE IF NOT EXISTS user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,6 +63,7 @@ CREATE TABLE IF NOT EXISTS test (
   email TEXT NOT NULL,
   start_time TEXT,
   end_time TEXT,
+  submit_time TEXT,
   number_of_questions INTEGER,
   marks INTEGER DEFAULT 0,
   is_submitted boolean DEFAULT 0
@@ -74,5 +76,15 @@ CREATE TABLE IF NOT EXISTS test_details (
   question_id INTEGER,
   answer CHAR
 );
+
+CREATE TABLE IF NOT EXISTS result_details (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL,
+  test_id INTEGER,
+  question_id INTEGER,
+  topic_id INTEGER,
+  result_time TEXT,
+  result INTEGER -- (1-> correct) (0 -> skipped) (-1 -> incorrect)
+)
 
 -- INSERT INTO exam (exam_name) VALUES("gate computer science")

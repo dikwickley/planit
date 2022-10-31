@@ -51,6 +51,41 @@ def admin():
     print(exams)
     return render_template("admin/index.html", exams=exams)
 
+# @admin_blueprint.route('/download/questions', methods=['GET','POST'])
+# def download_questions():
+#     db = get_db()
+#     if request.method == "POST":
+#         exam_id = request.form['exam']
+#         topics_in_db = db.execute(
+#             "SELECT * FROM questions \
+#             WHERE exam_id = ?",(exam_id,)
+#         ).fetchall()
+#         exam_name =  db.execute(
+#             "SELECT * FROM exam WHERE id = ?",(exam_id,)
+#         ).fetchone()["exam_name"]
+
+#         column_names = [
+#             "id",
+#             "topic_name",
+#             "subject_name",
+#             "required_hours"
+#         ]
+#         file_name = f"{exam_id}_{exam_name}.csv"
+#         file_path = os.path.join(data_dir, file_name)
+#         fp = open(file_path, 'w+')
+#         myFile = csv.writer(fp, lineterminator = '\n') #use lineterminator for windows
+#         myFile.writerow(column_names)
+#         for row in topics_in_db:
+#             topic = [
+#                 row['id'],
+#                 row['topic_name'],
+#                 row['subject_name'],
+#                 row['required_hours']
+#             ]
+#             myFile.writerow(topic)
+#         fp.close()
+#         return send_file(file_path, as_attachment=True)
+
 @admin_blueprint.route('/download/syllabus', methods=['GET','POST'])
 def download_syllabus():
     db = get_db()

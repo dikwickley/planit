@@ -2,6 +2,7 @@
 <html class="p-0">
 <title>{% block title %}{% endblock %} | Plan it!</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script
   src="https://code.jquery.com/jquery-3.6.1.min.js"
   integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
@@ -82,6 +83,11 @@
           Practice
         </div>
       </a>
+      <!-- <a href="{{ url_for('practice.config_demo_test') }}">
+        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          Demo
+        </div>
+      </a> -->
       {% if "name" not in session %}
       <a href="{{ url_for('auth.signup') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
@@ -95,7 +101,7 @@
       </a>
       {% endif %}
       {% if "name" in session %}
-      <a href="{{ url_for('account.show_account',screen='profile') }}">
+      <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
         <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Account
         </div>
