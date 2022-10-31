@@ -62,8 +62,8 @@ def signup():
             error = 'email is required.'
         elif not password:
             error = 'password is required.'
-        elif len(password) < 8:
-            error = 'password too small'
+        # elif len(password) < 8:
+        #     error = 'password too small'
         elif password != confirm_password:
             error = 'password should match'
         else:

@@ -4,10 +4,8 @@ import csv
 import random
 import os
 import re
-from app.__init__ import create_app
-
 from flask import (
-    Blueprint,  send_file, flash, g, redirect, render_template, request, session, url_for
+    Blueprint,  send_file, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 from app.db import get_mongo
 from app.db import get_db
@@ -15,18 +13,18 @@ from app.db import get_db
 
 admin_blueprint = Blueprint('admin',__name__, url_prefix='/admin')
 
-data_dir = os.path.join(create_app().instance_path, 'data')
+
+data_dir = os.path.join(admin_blueprint.root_path, 'data')
+
+print("root path", admin_blueprint.root_path)
+
 
 
 @admin_blueprint.route('/', methods=['GET','POST'])
 def admin():
     db = get_db()
 
-    if request.method == 'GET' and not session['admin']:
-      return render_template("admin/index.html")
-      
-    
-    if(session['admin'] == False):
+    if(request.method == 'POST'):
         admin_username = request.form['admin_username']
         admin_password = request.form['admin_password']
 
@@ -35,6 +33,12 @@ def admin():
             flash(error)
             return redirect(url_for('admin.admin'))
         session['admin'] = True
+
+    
+    if('admin' not in session):
+        session['admin'] = False;
+        return render_template("admin/index.html")
+      
         
     exams_in_db = db.execute(
         "SELECT * FROM exam"
@@ -61,6 +65,7 @@ def download_syllabus():
         ).fetchone()["exam_name"]
 
         column_names = [
+            "id",
             "topic_name",
             "subject_name",
             "required_hours"
@@ -72,6 +77,7 @@ def download_syllabus():
         myFile.writerow(column_names)
         for row in topics_in_db:
             topic = [
+                row['id'],
                 row['topic_name'],
                 row['subject_name'],
                 row['required_hours']
@@ -99,12 +105,9 @@ def upload_syllabus():
 
         file.save(file_path)
 
-        db.execute(
-            "DELETE FROM exam_details \
-            WHERE exam_id = ?",(exam_id,)
-        ).fetchall()
-
+        update_rows = []
         new_rows = []
+        delete_rows = []
         
         with open(file_path, mode ='r')as file:
    
@@ -114,20 +117,41 @@ def upload_syllabus():
             # displaying the contents of the CSV file
             for lines in csvFile:
                     print(lines)
-                    new_rows.append(lines)
+                    if(lines[0]==''):
+                        new_rows.append(lines)
+                    elif(lines[1]=='' and lines[2]=='' and lines[3]==''):
+                        delete_rows.append(lines[0]);
+                    else:
+                        update_rows.append(lines);
                     
 
-        new_rows.pop(0)
+        update_rows.pop(0)
+
+        print("update", update_rows)
+        print("new", new_rows)
+        print("delete", delete_rows)
+
+        for id in delete_rows:
+            db.execute(
+                "DELETE FROM exam_details where id=?",(id,)
+            )
+
+        for lines in update_rows:
+            db.execute(
+             "UPDATE exam_details SET topic_name=?, subject_name=?, required_hours=? WHERE id=?",(lines[1],lines[2],lines[3],lines[0],)   
+            )
 
         for lines in new_rows: 
             db.execute(
                     "INSERT INTO exam_details (exam_id, topic_name, subject_name, required_hours) VALUES(?,?,?,?)",
-                        (exam_id, lines[0], lines[1], lines[2])
+                        (exam_id, lines[1], lines[2], lines[3])
                     )
 
 
 
-            db.commit()
+        db.commit()
+
+        os.remove(file_path)
 
         error = "updated syllabus"
         flash(error)
