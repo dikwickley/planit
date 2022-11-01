@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
+import json
 import random
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -15,6 +16,7 @@ account_blueprint = Blueprint('account',__name__, url_prefix="/account")
 @login_required
 def show_account(screen):
     db = get_db()
+    email = session['email']
 
     if screen == "plan-dashboard":
         return render_template('account.html', screen=screen)
@@ -45,9 +47,47 @@ def show_account(screen):
                     "start_time": row['start_time'].split('T')[1],
                     "number_of_questions": row['number_of_questions'],
                     "marks": row['marks']
-                })
-            
-        return render_template('account.html', screen=screen, completed_tests=completed_tests, uncompleted_tests=uncompleted_tests)
+                })       
+        
+        total_answer = {}
+
+        total_answer['right'] = db.execute("SELECT count(*) FROM result_details \
+            WHERE email=? AND result=1",(email,)).fetchone()[0]
+        total_answer['wrong'] = db.execute("SELECT count(*) FROM result_details \
+            WHERE email=? AND result=-1",(email,)).fetchone()[0]
+        total_answer['skipped'] = db.execute("SELECT count(*) FROM result_details \
+            WHERE email=? AND result=0",(email,)).fetchone()[0]
+
+        print(total_answer)
+
+        date_answers = {}
+
+        date_answers['right'] = {}
+        date_answers['wrong'] = {}
+        date_answers['skipped'] = {}
+
+        result_times_in_db = db.execute("SELECT result_time, count(result) FROM result_details\
+            WHERE email=? AND result=1\
+            GROUP BY result_time ORDER BY result_time ",(email,))
+        for times in result_times_in_db:
+            date_answers['right'][times[0]] = times[1]
+
+        result_times_in_db = db.execute("SELECT result_time, count(result) FROM result_details\
+            WHERE email=? AND result=-1\
+            GROUP BY result_time ORDER BY result_time",(email,))
+        for times in result_times_in_db:
+            date_answers['wrong'][times[0]] = times[1]
+
+        result_times_in_db = db.execute("SELECT result_time, count(result) FROM result_details\
+            WHERE email=? AND result=0\
+            GROUP BY result_time ORDER BY result_time",(email,))
+        for times in result_times_in_db:
+            date_answers['skipped'][times[0]] = times[1]
+
+        print(date_answers)
+        
+        return render_template('account.html', screen=screen, completed_tests=completed_tests, uncompleted_tests=uncompleted_tests, total_answer=json.dumps(total_answer), date_answers=json.dumps(date_answers))
+
     elif screen == "settings":
         pass
     elif screen == "profile":

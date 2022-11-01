@@ -50,8 +50,8 @@
                         Test {{test.index}} {{test.date}}
                         <div class="flex flex-row ">
                         <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">time:  {{test.submit_time}}</div>
-                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:  {{test.marks}}</div>
-                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_result', test_id=test.test_id)}}">view</a>
+                        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:  {{test.marks}}/{{test.number_of_questions}}</div>
+                        <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1" href="{{url_for('practice.show_result', test_id=test.test_id)}}">view result</a>
                     </div>
                     </li>
                 {% endfor %}
@@ -68,39 +68,98 @@
     
             </ul>
 
-            <div class="w-[50%] p-2 h-[75%]  y-scroll">
-                <!-- <canvas id="myChart"></canvas> -->
+            <div class="flex flex-col items-center w-[50%] p-2 h-[75%]  y-scroll">
+                <div class="text-3xl pb-3 self-start">Analytics</div>
+                <div class="w-[70%]">
+                    <canvas id="total_answer"></canvas>
+                </div>
+                <div class="w-[100%] py-4">
+                    <canvas id="date_answer"></canvas>
+                </div>
+                
             </div>
 
         </div>
         <script>
-            const labels = [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-            ];
-          
-            const data = {
-              labels: labels,
+
+            let total_answer = JSON.parse('{{total_answer | safe}}')
+            let date_answer = JSON.parse('{{date_answers | safe}}')
+            console.log(total_answer)
+
+
+            const total_answer_data = {
+              labels: Object.keys(total_answer),
               datasets: [{
-                label: 'My First dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45],
+                label: 'Answer Distribution',
+                backgroundColor: ['#08D9D6','#FF2E63','grey'],
+                // borderColor: 'rgb(255, 99, 132)',
+                data: Object.values(total_answer),
               }]
             };
           
-            const config = {
-              type: 'line',
-              data: data,
-              options: {}
+            const total_answer_config = {
+              type: 'doughnut',
+              data: total_answer_data,
+              options: {
+                layout:{
+                    padding: 3
+                },
+                plugins:{
+                    legend:{
+                        position:"bottom",
+                        labels:{
+                            color: "white"
+                        }
+                    }
+                }
+              }
             };
-            const myChart = new Chart(
-                document.getElementById('myChart'),
-                config
+            const total_answer_Chart = new Chart(
+                document.getElementById('total_answer'),
+                total_answer_config
+            );
+
+
+            const date_answer_right_data = {
+              labels: Object.keys(date_answer.right),
+              datasets: [
+                {
+                label: 'right',
+                backgroundColor: '#08D9D6',
+                borderColor: '#08D9D6',
+                data: Object.values(date_answer.right),
+              },{
+                label: 'wrong',
+                backgroundColor: '#FF2E63',
+                borderColor: '#FF2E63',
+                data: Object.values(date_answer.wrong),
+              },{
+                label: 'skipped',
+                backgroundColor: 'grey',
+                borderColor: 'grey',
+                data: Object.values(date_answer.skipped),
+              }]
+            };
+            const date_answer_right_config = {
+              type: 'line',
+              data:  date_answer_right_data,
+              options: {
+                layout:{
+                    padding: 3
+                },
+                plugins:{
+                    legend:{
+                        position:"bottom",
+                        labels:{
+                            color: "white"
+                        }
+                    }
+                }
+              }
+            };
+            const date_answer_chart = new Chart(
+                document.getElementById('date_answer'),
+                date_answer_right_config
             );
           </script>
         

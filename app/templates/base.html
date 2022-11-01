@@ -129,7 +129,7 @@
   </div>
 
   {% for message in get_flashed_messages() %}
-  <div id="flash-message"" class="bg-white opacity-75 p-2 m-2 px-12 rounded-md text-center absolute top-0 right-0">{{ message }}</div>
+  <div id="flash-message" class="bg-white opacity-75 p-2 m-2 px-12 rounded-md text-center absolute top-0 right-0">{{ message }}</div>
   <script>
     setTimeout(function() {
         $('#flash-message').fadeOut('slow');

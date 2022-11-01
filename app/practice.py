@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 import random
 import re
+from unittest import result
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -118,8 +119,7 @@ def submit_test():
     print("test_id", test_id)
     print("submit_time", submit_time)
 
-    db.execute("UPDATE test \
-        SET is_submitted=1, submit_time=? WHERE id=?",(submit_time, test_id))
+    
 
     test_questions = db.execute('SELECT question_id FROM test_details\
         WHERE test_id = ?',(test_id,)).fetchall()
@@ -170,20 +170,25 @@ def submit_test():
         "skipped": skipped_answers
     }
 
+    db.execute("UPDATE test \
+        SET is_submitted=1, submit_time=?, marks=? WHERE id=?",(submit_time, len(right_answers) ,test_id))
+
     print(test_result_data)
+
+    result_time = submit_time.split('T')[0]
     
 
     for right_answer in right_answers:
         db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
-            VALUES(?,?,?,?,?,?)",(email, test_id, right_answer['question_id'], right_answer['topic_id'], submit_time, 1))
+            VALUES(?,?,?,?,?,?)",(email, test_id, right_answer['question_id'], right_answer['topic_id'], result_time, 1))
 
     for wrong_answer in wrong_answers:
         db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
-            VALUES(?,?,?,?,?,?)",(email, test_id, wrong_answer['question_id'], wrong_answer['topic_id'], submit_time, -1))
+            VALUES(?,?,?,?,?,?)",(email, test_id, wrong_answer['question_id'], wrong_answer['topic_id'], result_time, -1))
 
     for skipped_answer in skipped_answers:
         db.execute("INSERT INTO result_details (email, test_id, question_id, topic_id, result_time, result) \
-            VALUES(?,?,?,?,?,?)",(email, test_id, skipped_answer['question_id'], skipped_answer['topic_id'], submit_time, 0))
+            VALUES(?,?,?,?,?,?)",(email, test_id, skipped_answer['question_id'], skipped_answer['topic_id'], result_time, 0))
 
     db.commit()
     return redirect(url_for('practice.show_result',test_id=test_id))
