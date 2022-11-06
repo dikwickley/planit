@@ -25,7 +25,36 @@ def show_account(screen):
     email = session['email']
 
     if screen == "plan-dashboard":
-        return render_template('account.html', screen=screen)
+        
+        plan_in_db = db.execute(
+            "SELECT * FROM plan\
+                WHERE email=?",(session['email'],)
+        ).fetchone()
+
+        plan_id = plan_in_db["id"]
+        start_date = plan_in_db["start_date"]
+        end_date = plan_in_db["end_date"]
+
+        dates = {
+            "start_date": start_date.strftime("%m/%d/%Y"),
+            "end_date": end_date.strftime("%m/%d/%Y")
+        }
+
+        uncompleted_topics_in_db = db.execute(
+            "SELECT * FROM plan_details WHERE completed = 0 AND plan_id=?",(plan_id,)
+        ).fetchall()
+
+        completed_topics_in_db = db.execute(
+            "SELECT * FROM plan_details WHERE completed = 1 AND plan_id=?",(plan_id,)
+        ).fetchall()
+
+        topic_number_data = {
+            "completed" : len(completed_topics_in_db),
+            "uncompleted" : len(uncompleted_topics_in_db),
+        }
+        print(topic_number_data)
+
+        return render_template('account.html', screen=screen, topic_number_data=json.dumps(topic_number_data),start_end=dates, dates=json.dumps(dates))
     elif screen == "test-dashboard":
         tests_in_db = db.execute(
             "SELECT * FROM test \

@@ -12,30 +12,107 @@
                 Profile
             </button>
         </a> -->
+        {% if screen != "plan-dashboard" %}
         <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                 Plan dashboard
             </button>
         </a>
+        {% else %}
+        <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
+            <button class="bg-white text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                Plan dashboard
+            </button>
+        </a>
+
+        {% endif %}
+
+        {% if screen != "test-dashboard" %}
         <a href="{{ url_for('account.show_account',screen='test-dashboard') }}">
             <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
                 Test dashboard
             </button>
         </a>
-        <!-- <a href="{{ url_for('account.show_account',screen='settings') }}">
-            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
-                Settings
+        {% else %}
+        <a href="{{ url_for('account.show_account',screen='test-dashboard') }}">
+            <button class="bg-white text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                Test dashboard
             </button>
-        </a> -->
+        </a>
+        {% endif %}
+
     </div>
 
     <div class="pt-4 px-5 text-white h-full">
         {% if screen == "plan-dashboard" %}
         <div>
 
-            hi
+            <div class="w-full h-full flex flex-col overflow-hidden">
+
+                <div class="text-3xl pb-3 self-start">Analytics</div>
+                <div class="flex flex-row">
+                    <div class="w-[60%] m-2">
+                        <div class="text-1xl pb-3 self-start">Comparision of Number of topics</div>
+                        <canvas id="topic_number"></canvas>
+                    </div>
+                    <div class="w-[40%] m-2 p-2">
+                        <div class="text-1xl pb-3 self-start">Time Left</div>
+                        <p id="timer" class="break-normal text-6xl font-bold"></p>
+                        <p>Start Date <label class="text-2xl text-pgreen">{{start_end['start_date']}}</label></p>
+                        <p>End Date <label class="text-2xl text-pred">{{start_end['end_date']}}</label></p>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
+        <script src="/static/timer.js"> </script>
+        <script>
+
+            let dates = JSON.parse('{{dates | safe}}')
+            console.log(dates)
+            CreateTimer("timer", dates.end_date)
+        </script>
+        <script>
+            let topic_numbers = JSON.parse('{{topic_number_data | safe}}')
+
+            const topic_number_data = {
+                labels: [""],
+                datasets: [{
+                    label: 'completed',
+                    backgroundColor: ['#08D9D6'],
+                    data: [topic_numbers.completed],
+                },
+                {
+                    label: 'uncompleted',
+                    backgroundColor: ['#FF2E63'],
+                    data: [topic_numbers.uncompleted],
+                }]
+            };
+
+            const topic_number_config = {
+                type: 'bar',
+                data: topic_number_data,
+                options: {
+                    scales: {
+                        x: {
+                            grid: {
+                                color: " white",
+                            }
+                        }, y: { grid: { color: "white" } }
+                    }, indexAxis: 'y', elements: {
+                        bar: { borderWidth: 1, }
+                    }, responsive: true, plugins: {
+                        legend: {
+                            position: 'top', labels: {
+                                color: "white"
+                            }
+                        },
+                    }
+                },
+            }; const total_number_char = new Chart(
+                document.getElementById('topic_number'), topic_number_config); 
+        </script>
         {% endif %}
 
         {% if screen == "test-dashboard" %}
@@ -62,16 +139,17 @@
                     <div class="flex flex-row justify-start items-start flex-wrap py-2">
                         {% for topic in topic_answer.right %}
                         <div class="tooltip">
-                            
+
                             <div class="m-1 px-2 flex flex-row rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1">
                                 <div class="pr-1">
-                                {{topic.topic_count}} 
-                            </div>
+                                    {{topic.topic_count}}
+                                </div>
                                 <div class="truncate">
-                                {{topic.topic_name}}
+                                    {{topic.topic_name}}
+                                </div>
                             </div>
-                            </div>
-                            <span class="tooltiptext">{{topic.subject_name}}: {{topic.topic_name}}</span>
+                            <span class="tooltiptext">{{topic.subject_name}}:
+                                {{topic.topic_name}}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -79,21 +157,22 @@
                     <div class="flex flex-row justify-start items-start flex-wrap py-2">
                         {% for topic in topic_answer.wrong %}
                         <div class="tooltip">
-                            
+
                             <div class="m-1 px-2 flex flex-row rounded-lg bg-pred text-white text-sm font-bold mx-1">
                                 <div class="pr-1">
-                                {{topic.topic_count}} 
-                            </div>
+                                    {{topic.topic_count}}
+                                </div>
                                 <div class="truncate">
-                                {{topic.topic_name}}
+                                    {{topic.topic_name}}
+                                </div>
                             </div>
-                            </div>
-                            <span class="tooltiptext">{{topic.subject_name}}: {{topic.topic_name}}</span>
+                            <span class="tooltiptext">{{topic.subject_name}}:
+                                {{topic.topic_name}}</span>
                         </div>
                         {% endfor %}
                     </div>
 
-                    
+
                 </div>
 
             </div>
@@ -113,7 +192,8 @@
                         <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">marks:
                             {{test.marks}}/{{test.number_of_questions}}</div>
                         <a class="px-2 rounded-lg bg-pgreen text-pblack text-sm font-bold mx-1"
-                            href="{{url_for('practice.show_result', test_id=test.test_id)}}">view result</a>
+                            href="{{url_for('practice.show_result', test_id=test.test_id)}}">view
+                            result</a>
                     </div>
                 </li>
                 {% endfor %}
