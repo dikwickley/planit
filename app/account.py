@@ -66,7 +66,16 @@ def show_account(screen):
 
         print(subject_data)
 
-        return render_template('account.html', screen=screen, topic_number_data=json.dumps(topic_number_data),start_end=dates, dates=json.dumps(dates), subject_data=json.dumps(subject_data))
+        completed_topics = []
+
+        for topic_row in completed_topics_in_db:
+            completed_topics.append({
+                "topic_name" : topic_row["topic_name"],
+                "subject_name" : topic_row["subject_name"]
+            })
+
+        return render_template('account.html', screen=screen, topic_number_data=json.dumps(topic_number_data),start_end=dates, dates=json.dumps(dates), subject_data=json.dumps(subject_data), completed_topics=completed_topics)
+
     elif screen == "test-dashboard":
         tests_in_db = db.execute(
             "SELECT * FROM test \

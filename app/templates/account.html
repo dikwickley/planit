@@ -45,34 +45,55 @@
 
     <div class="pt-4 px-5 text-white h-full">
         {% if screen == "plan-dashboard" %}
-        <div class="w-full h-full flex flex-col overflow-hidden">
+        <div class="w-full h-full flex flex-row ">
 
-            <div class="flex flex-col items-center w-full p-2 h-full  y-scroll">
+            <div class="flex flex-col items-center w-[50%] p-2 h-full  overflow-hidden">
+                <div class="y-scroll">
 
-                <div class="text-3xl pb-3 self-start">Analytics</div>
-                <div class="flex flex-col  w-full">
-                    <div class="flex flex-row">
-                        <div class="w-[60%] m-2">
-                            <div class="text-1xl pb-3 self-start">Comparision of Number of topics</div>
+                    <div class="text-3xl pb-3 self-start">Analytics</div>
+                    <div class="flex flex-col items-center  w-full">
+
+                        <div class="w-[90%] m-2">
+                            <div class="text-1xl pb-3 self-start text-center">Comparision of Number of topics</div>
                             <canvas id="topic_number"></canvas>
                         </div>
-                        <div class="w-[40%] m-2 p-2">
-                            <div class="text-1xl pb-3 self-start">Time Left</div>
-                            <p id="timer" class="break-normal text-6xl font-bold mt-8"></p>
-                            <p>Start Date <label class="text-2xl text-pgreen">{{start_end['start_date']}}</label></p>
-                            <p>End Date <label class="text-2xl text-pred">{{start_end['end_date']}}</label></p>
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class="w-[40%] m-2">
-                            <div class="text-1xl pb-3 ">Subject Wise Completion</div>
+
+
+                        <div class="w-[80%] m-2">
+                            <div class="text-1xl pb-3 text-center">Subject Wise Completion</div>
                             <canvas id="subject_completion"></canvas>
                         </div>
+
+
+                    </div>
+                    <div class="text-3xl py-3 self-start">Completed Topics</div>
+                    <div class="self-start w-[100%]">
+                        {% for topic in completed_topics %}
+
+                        <div class="tooltip">
+
+                            <div class="m-1 px-2 flex flex-row rounded-lg bg-white text-pblack text-sm font-bold mx-1">
+                                <div class="pr-1">
+                                    {{topic.topic_count}}
+                                </div>
+                                <div class="truncate-lg">
+                                    {{topic.topic_name}}
+                                </div>
+                            </div>
+                            <span class="tooltiptext">{{topic.subject_name}}:
+                                {{topic.topic_name}}</span>
+                        </div>
+                        {% endfor %}
                     </div>
 
                 </div>
+            </div>
 
-
+            <div class="w-[40%] m-2 p-2">
+                <div class="text-3xl pb-3 self-start">Time Left</div>
+                <p id="timer" class="break-normal text-8xl font-bold mt-8"></p>
+                <p>Start Date <label class="text-2xl text-pgreen">{{start_end['start_date']}}</label></p>
+                <p>End Date <label class="text-2xl text-pred">{{start_end['end_date']}}</label></p>
             </div>
 
         </div>
@@ -131,7 +152,8 @@
 
             console.log(subject_completion)
 
-            colors = generateShades("#08D9D6", Object.keys(subject_completion).length - 1);
+            colors = generateShades("#08D9D6", Object.keys(subject_completion).length);
+            colors.shift();
             colors.push('grey')
 
             const subject_completion_data = {

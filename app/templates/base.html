@@ -3,10 +3,8 @@
 <title>{% block title %}{% endblock %} | Plan it!</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<script
-  src="https://code.jquery.com/jquery-3.6.1.min.js"
-  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-  crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
 <script>
   tailwind.config = {
@@ -14,7 +12,7 @@
       extend: {
         colors: {
           pblack: '#252A34',
-          pred : '#FF2E63',
+          pred: '#FF2E63',
           pgreen: '#08D9D6'
         }
       }
@@ -22,56 +20,65 @@
   }
 </script>
 <style>
+  .y-scroll {
+    overflow-y: scroll;
+    /* Add the ability to scroll */
+  }
 
 
-
-.y-scroll {
-  overflow-y: scroll; /* Add the ability to scroll */
-}
-
-
-.y-scroll::-webkit-scrollbar {
+  .y-scroll::-webkit-scrollbar {
     display: none;
-}
+  }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.y-scroll {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-.truncate {
-  width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .y-scroll {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
+  .truncate {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
- 
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
+  .truncate-lg {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  padding: 5px;
-}
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    /* If you want dots under the hoverable text */
+  }
+
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    padding: 5px;
+  }
 </style>
 
 
@@ -94,25 +101,28 @@
       </div>
       <div class="text-white text-[1.5vw] text-left m-5">
         {% if "name" in session %}
-          Hello, {{session['name']}}
-          {% endif %}
+        Hello, {{session['name']}}
+        {% endif %}
       </div>
-     
+
     </div>
 
     <div class="flex flex-col my-4 mr-[10vw]">
       <a href="{{ url_for('index') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Home
         </div>
       </a>
       <a href="{{ url_for('plan.show_plan') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Plan
         </div>
       </a>
       <a href="{{ url_for('practice.config_test') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Practice
         </div>
       </a>
@@ -123,52 +133,57 @@
       </a> -->
       {% if "name" not in session %}
       <a href="{{ url_for('auth.signup') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Signup
         </div>
       </a>
       <a href="{{ url_for('auth.login') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Login
         </div>
       </a>
       {% endif %}
       {% if "name" in session %}
       <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Account
         </div>
       </a>
       <a href="{{ url_for('auth.logout') }}">
-        <div class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Logout
         </div>
       </a>
       {% endif %}
     </div>
-    
+
   </div>
 
   <div class="w-full h-full p-3 py-10">
     {% block content %}{% endblock %}
   </div>
 
-  
 
-  </div>
 
-  <div class="absolute bottom-0 right-0 text-[10vw] leading-snug text-pred">
-    PLAN<span class="text-white p-0 m-0">IT</span>
-  </div>
+</div>
 
-  {% for message in get_flashed_messages() %}
-  <div id="flash-message" class="bg-white opacity-75 p-2 m-2 px-12 rounded-md text-center absolute top-0 right-0">{{ message }}</div>
-  <script>
-    setTimeout(function() {
-        $('#flash-message').fadeOut('slow');
-    }, 5000);
-  </script>
-  
+<div class="absolute bottom-0 right-0 text-[10vw] leading-snug text-pred">
+  PLAN<span class="text-white p-0 m-0">IT</span>
+</div>
+
+{% for message in get_flashed_messages() %}
+<div id="flash-message" class="bg-white opacity-75 p-2 m-2 px-12 rounded-md text-center absolute top-0 right-0">{{
+  message }}</div>
+<script>
+  setTimeout(function () {
+    $('#flash-message').fadeOut('slow');
+  }, 5000);
+</script>
+
 {% endfor %}
 
 </div>
@@ -177,7 +192,7 @@
 
 <!-- <script src="three.r119.min.js" defer></script>
 <script src="vanta.globe.min.js" defer></script> -->
-<script> 
+<script>
 // VANTA.GLOBE({
 //   //Add the id of your tag with the # before
 //     el: "#anim_globe",

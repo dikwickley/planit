@@ -18,8 +18,11 @@ function generate(r, g, b, n) {
   let inc = Math.floor(256 / n);
   for (var i = 0; i < n; i++) {
     r += 33;
+    r %= 255;
     g += 33;
+    g %= 255;
     b += 33;
+    b %= 255;
     colors.push(rbgToHex(r, g, b));
   }
   return colors;
