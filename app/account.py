@@ -54,7 +54,19 @@ def show_account(screen):
         }
         print(topic_number_data)
 
-        return render_template('account.html', screen=screen, topic_number_data=json.dumps(topic_number_data),start_end=dates, dates=json.dumps(dates))
+        subject_data = {}
+
+        for topic_row in completed_topics_in_db:
+            if topic_row["subject_name"] in subject_data:
+                subject_data[topic_row["subject_name"]] += 1;
+            else:
+                subject_data[topic_row["subject_name"]] = 1;
+        
+        subject_data["Uncompleted"] = len(uncompleted_topics_in_db);
+
+        print(subject_data)
+
+        return render_template('account.html', screen=screen, topic_number_data=json.dumps(topic_number_data),start_end=dates, dates=json.dumps(dates), subject_data=json.dumps(subject_data))
     elif screen == "test-dashboard":
         tests_in_db = db.execute(
             "SELECT * FROM test \

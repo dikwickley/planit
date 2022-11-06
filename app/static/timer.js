@@ -1,6 +1,4 @@
 const CreateTimer = (html_id, end_time) => {
-  console.log(html_id);
-  console.log(end_time);
   var countDownDate = new Date(end_time).getTime();
 
   // Update the count down every 1 second
