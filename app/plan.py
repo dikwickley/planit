@@ -48,6 +48,30 @@ def constant_study_function(hours, number_of_weeks):
     return li
 
 
+@plan_blueprint.route('/', methods=['POST'])
+@login_required
+@configured_required
+def handle_topic_completion():
+    db = get_db()
+
+    plan_detail_id = request.form.get('plan_detail_id')
+    completed = request.form.get('completed')
+
+    print("plan_detail_id",plan_detail_id)
+    print("completed",completed)
+
+    completed = int(not int(completed))
+    
+
+    print("completed",completed)
+
+    db.execute(
+        "UPDATE plan_details SET completed = ?  WHERE id = ?",(completed, plan_detail_id,)
+    )
+
+    db.commit()
+    
+    return redirect(url_for('plan.show_plan'))
 
 @plan_blueprint.route('/', methods=['GET','POST'])
 @login_required
@@ -57,14 +81,14 @@ def show_plan():
 
     email = session['email']
 
-    print(f"email {email}")
+    # print(f"email {email}")
 
     plan = db.execute(
         "SELECT * FROM plan \
         WHERE email = ?",(email,)
     ).fetchone()
 
-    print(f"plan id {plan}")
+    # print(f"plan id {plan}")
 
 
     exam_name =  plan['exam']
@@ -77,7 +101,8 @@ def show_plan():
             WHERE plan_id = ?",(str(plan['id']),)
     ).fetchall()
 
-    print(f"plan in db {plan_in_db}")
+    plan_id = plan['id']
+    # print(f"plan in db {plan_in_db}")
 
     plan_data = {}
 
@@ -96,7 +121,9 @@ def show_plan():
                         {
                             "subject_name": plan_row["subject_name"],
                             "topic_name": plan_row["topic_name"],
-                            "hours": plan_row["required_hours"]
+                            "hours": plan_row["required_hours"],
+                            "plan_detail_id": plan_row["id"],
+                            "completed": plan_row["completed"]
                         }
                     ]
             }
@@ -108,17 +135,19 @@ def show_plan():
                 {
                     "subject_name": plan_row["subject_name"],
                     "topic_name": plan_row["topic_name"],
-                    "hours": plan_row["required_hours"]
+                    "hours": plan_row["required_hours"],
+                    "plan_detail_id": plan_row["id"],
+                    "completed": plan_row["completed"]
                 }
             )
 
     for key in plan_data:
-        print (key) # for the keys
-        print (plan_data[key])
+        # print (key) # for the keys
+        # print (plan_data[key])
         plan_data[key]["hours_per_day"] = math.ceil(plan_data[key]["total_hours"]/7)
-
-    print(plan_data)
-    return render_template('plan/index.html', plan_data=plan_data, exam_name=exam_name)
+    
+    # print(plan_data)
+    return render_template('plan/index.html', plan_data=plan_data, exam_name=exam_name, plan_id=plan_id)
 
 
 @plan_blueprint.route('/configure', methods=['GET','POST'])

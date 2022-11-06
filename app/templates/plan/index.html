@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Plan{% endblock %}</h1>
+<h1>{% block title %}Plan{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -9,23 +9,35 @@
 
   <div class="h-[80%] text-xl">
     <div class="text-pred text-7xl mb-7">{{ exam_name }}</div>
+
     {% for week_key in plan_data %}
-      <div class="my-3">
-        <div class="text-pgreen text-4xl">{{week_key}}</div>
-        <div class="flex flex row p-2">
-          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Total Hours:  {{plan_data[week_key]["total_hours"]}}</div>
-          <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Min. daily hours:  {{plan_data[week_key]["hours_per_day"]}}</div>
-        </div>
-        {% for topic_data in plan_data[week_key]["data"] %}
-          <div class="text-white pl-7 flex items-center"> 
-            <input type="checkbox" /> 
-            <div class="mx-2">{{topic_data['subject_name']}} | {{topic_data['topic_name']}}</div> 
-            <div class="px-2 flex rounded-lg bg-white text-pblack text-sm font-bold mx-1">{{topic_data['hours']}}</div>
-          </div>
-        {% endfor %}
+    <div class="my-3">
+      <div class="text-pgreen text-4xl">{{week_key}}</div>
+      <div class="flex flex row p-2">
+        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Total Hours:
+          {{plan_data[week_key]["total_hours"]}}</div>
+        <div class="px-2 rounded-lg bg-white text-pblack text-sm font-bold mx-1">Min. daily hours:
+          {{plan_data[week_key]["hours_per_day"]}}</div>
       </div>
+      {% for topic_data in plan_data[week_key]["data"] %}
+      <div class="text-white pl-7 flex items-center">
+        <form action='{{url_for("plan.handle_topic_completion")}}' method="POST">
+          <input type="hidden" name="plan_detail_id" value="{{topic_data['plan_detail_id']}}" />
+          <input type="hidden" name="completed" value="{{topic_data['completed']}}" />
+          {% if topic_data['completed'] == 0 %}
+          <button class="m-1 p-1 bg-white text-pblack" type="submit">mark</button>
+          {% else %}
+          <button class="m-1 p-1 bg-pgreen text-white" type="submit">unmark</button>
+          {% endif %}
+
+        </form>
+        <div class="mx-2">{{topic_data['subject_name']}} | {{topic_data['topic_name']}}</div>
+        <div class="px-2 flex rounded-lg bg-white text-pblack text-sm font-bold mx-1">{{topic_data['hours']}}</div>
+      </div>
+      {% endfor %}
+    </div>
     {% endfor %}
   </div>
 </div>
-  
+
 {% endblock %}

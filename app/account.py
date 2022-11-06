@@ -100,30 +100,33 @@ def show_account(screen):
         topic_answer['skipped'] = []
         
 
-        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, exam_details.subject_name as sn, count(result_details.result) as cnt FROM\
             result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
                 WHERE email=? AND result_details.result=1 GROUP BY topic_name",(email,))
         for topic in result_topics_in_db:
             topic_answer['right'].append({
                 "topic_name": topic['tn'],
+                "subject_name": topic['sn'],
                 "topic_count": topic['cnt'],
             })
 
-        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, exam_details.subject_name as sn, count(result_details.result) as cnt FROM\
             result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
                 WHERE email=? AND result_details.result=-1 GROUP BY topic_name",(email,))
         for topic in result_topics_in_db:
             topic_answer['wrong'].append({
                 "topic_name": topic['tn'],
+                "subject_name": topic['sn'],
                 "topic_count": topic['cnt'],
             })
 
-        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, count(result_details.result) as cnt FROM\
+        result_topics_in_db = db.execute("SELECT exam_details.topic_name as tn, exam_details.subject_name as sn, count(result_details.result) as cnt FROM\
             result_details LEFT JOIN exam_details ON result_details.topic_id = exam_details.id\
                 WHERE email=? AND result_details.result=0 GROUP BY topic_name",(email,))
         for topic in result_topics_in_db:
             topic_answer['skipped'].append({
                 "topic_name": topic['tn'],
+                "subject_name": topic['sn'],
                 "topic_count": topic['cnt'],
             })
 
