@@ -131,6 +131,8 @@
           Demo
         </div>
       </a> -->
+
+
       {% if "name" not in session %}
       <a href="{{ url_for('auth.signup') }}">
         <div
@@ -146,6 +148,7 @@
       </a>
       {% endif %}
       {% if "name" in session %}
+
       <a href="{{ url_for('account.show_account',screen='plan-dashboard') }}">
         <div
           class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
@@ -158,6 +161,14 @@
           Logout
         </div>
       </a>
+      {% if "admin" in session and session["admin"]==True %}
+      <a href="{{ url_for('admin.admin') }}">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          Admin
+        </div>
+      </a>
+      {% endif %}
       {% endif %}
     </div>
 

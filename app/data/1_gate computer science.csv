@@ -1,6 +1,6 @@
 id,topic_name,subject_name,required_hours
 1,Propositional and first order logic,Engineering Mathematics,1
-2,Sets,Engineering Mathematics,1
+2,Sets v3,Engineering Mathematics,1
 3,relations,Engineering Mathematics,2
 4,functions,Engineering Mathematics,5
 5,partial orders,Engineering Mathematics,2
@@ -95,4 +95,3 @@ id,topic_name,subject_name,required_hours
 94,basics of public key and private key cryptography,Computer Networks,4
 95,digital signatures and certificates,Computer Networks,4
 96,firewalls,Computer Networks,3
-97,new topic 1,Computer Networks,1

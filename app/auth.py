@@ -9,6 +9,11 @@ from app.db import get_db
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
+def check_admin(user_id):
+    db = get_db()
+    user_in_db = db.execute('SELECT * FROM admin WHERE user_id = ?',(user_id,)).fetchone()
+    
+    return not user_in_db==None
 
 @auth_blueprint.route('/login', methods=('GET', 'POST'))
 def login():
@@ -20,6 +25,7 @@ def login():
         user = db.execute(
             'SELECT * FROM user WHERE email = ?', (email,)
         ).fetchone()
+
 
         if user is None:
             error = 'Incorrect email.'
@@ -36,6 +42,9 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            session['admin'] = None
+            if(check_admin(user['id'])):
+                session['admin'] = True
             session['email'] = user['email']
             session['name'] = user['name']
             if(user['configured']==0):

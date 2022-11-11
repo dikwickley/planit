@@ -23,21 +23,10 @@ print("root path", admin_blueprint.root_path)
 @admin_blueprint.route('/', methods=['GET','POST'])
 def admin():
     db = get_db()
-
-    if(request.method == 'POST'):
-        admin_username = request.form['admin_username']
-        admin_password = request.form['admin_password']
-
-        if(admin_password!='admin' or admin_username != 'admin'):
-            error = "wrong credentials"
-            flash(error)
-            return redirect(url_for('admin.admin'))
-        session['admin'] = True
-
     
     if('admin' not in session):
-        session['admin'] = False;
-        return render_template("admin/index.html")
+        # session['admin'] = False;
+        return redirect(url_for('index'))
       
         
     exams_in_db = db.execute(
@@ -181,9 +170,6 @@ def upload_syllabus():
                     "INSERT INTO exam_details (exam_id, topic_name, subject_name, required_hours) VALUES(?,?,?,?)",
                         (exam_id, lines[1], lines[2], lines[3])
                     )
-
-
-
         db.commit()
 
         os.remove(file_path)
