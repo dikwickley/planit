@@ -122,6 +122,8 @@ def show_account(screen):
         date_answers['wrong'] = {}
         date_answers['skipped'] = {}
 
+        ##FIX THIS WHEN ONE OR MORE CATEGORY IS ZERO
+
         result_times_in_db = db.execute("SELECT result_time, count(result) FROM result_details\
             WHERE email=? AND result=1\
             GROUP BY result_time ORDER BY result_time ",(email,))
