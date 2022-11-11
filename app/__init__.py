@@ -1,7 +1,18 @@
 import os
-
+import requests
 from flask import Flask, render_template, session
 
+def get_random_quote():
+    try:
+        response = requests.get("https://api.gameofthronesquotes.xyz/v1/random")
+        if response.status_code == 200:
+            json_data = response.json()
+            print(json_data)
+            return {"quote":json_data['sentence'], "author": json_data["character"]["name"]}
+        else:
+            print("Error while getting quote")
+    except:
+        print("Something went wrong! Try Again!")
 
 
 from .auth import login_required
@@ -50,7 +61,8 @@ def create_app(test_config=None):
         # user = None
         # if 'email' in session:
         #     user = session['email']
-        return render_template("index.html")
+        data = get_random_quote()
+        return render_template("index.html", quote=data['quote'], author=data['author'])
         
     @app.errorhandler(404)
     def page_not_found(error):

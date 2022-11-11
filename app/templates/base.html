@@ -99,10 +99,16 @@
       <div class="text-pred text-[7vw]  leading-none tracking-tighter ">
         {% block header %}{% endblock %}
       </div>
+
       <div class="text-white text-[1.5vw] text-left m-5">
         {% if "name" in session %}
         Hello, {{session['name']}}
         {% endif %}
+      </div>
+      <div class="text-white p-2 text-xl w-[200px]">
+        "{{quote}}"
+        <br />
+        -{{author}}
       </div>
 
     </div>
@@ -195,6 +201,7 @@
   }, 5000);
 </script>
 
+
 {% endfor %}
 
 </div>
@@ -224,5 +231,6 @@
 //     // backgroundColor: 0xd83423
 //   })
 </script>
+
 
 </html>
