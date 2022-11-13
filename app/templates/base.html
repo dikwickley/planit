@@ -114,7 +114,7 @@
       {% endif %}
 
     </div>
-
+    {% if "admin" not in session %}
     <div class="flex flex-col my-4 mr-[10vw]">
       <a href="{{ url_for('index') }}">
         <div
@@ -169,16 +169,36 @@
           Logout
         </div>
       </a>
-      {% if "admin" in session and session["admin"]==True %}
+
+      {% endif %}
+
+    </div>
+
+    {% endif %}
+
+    {% if "admin" in session and session["admin"]==True %}
+
+    <div class="flex flex-col my-4 mr-[10vw]">
       <a href="{{ url_for('admin.admin') }}">
         <div
           class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
           Admin
         </div>
       </a>
-      {% endif %}
-      {% endif %}
+      <a href="{{ url_for('admin.admin_syllabus') }}">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          Update Syllabus
+        </div>
+      </a>
+      <a href="{{ url_for('auth.logout') }}">
+        <div
+          class="w-[20vw] bg-pgreen h-[5vh] my-2 text-right text-[5vh] leading-none text-pblack hover:bg-pred hover:text-white cursor-pointer">
+          Logout
+        </div>
+      </a>
     </div>
+    {% endif %}
 
   </div>
 
