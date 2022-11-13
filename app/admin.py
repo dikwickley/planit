@@ -124,40 +124,138 @@ def admin_syllabus():
 
     return render_template("admin/syllabus.html", exams=exams)
 
-# @admin_blueprint.route('/download/questions', methods=['GET','POST'])
-# def download_questions():
-#     db = get_db()
-#     if request.method == "POST":
-#         exam_id = request.form['exam']
-#         topics_in_db = db.execute(
-#             "SELECT * FROM questions \
-#             WHERE exam_id = ?",(exam_id,)
-#         ).fetchall()
-#         exam_name =  db.execute(
-#             "SELECT * FROM exam WHERE id = ?",(exam_id,)
-#         ).fetchone()["exam_name"]
 
-#         column_names = [
-#             "id",
-#             "topic_name",
-#             "subject_name",
-#             "required_hours"
-#         ]
-#         file_name = f"{exam_id}_{exam_name}.csv"
-#         file_path = os.path.join(data_dir, file_name)
-#         fp = open(file_path, 'w+')
-#         myFile = csv.writer(fp, lineterminator = '\n') #use lineterminator for windows
-#         myFile.writerow(column_names)
-#         for row in topics_in_db:
-#             topic = [
-#                 row['id'],
-#                 row['topic_name'],
-#                 row['subject_name'],
-#                 row['required_hours']
-#             ]
-#             myFile.writerow(topic)
-#         fp.close()
-#         return send_file(file_path, as_attachment=True)
+@admin_blueprint.route('/questions', methods=['GET', 'POST'])
+def admin_question():
+    db = get_db()
+
+    if ('admin' not in session):
+        # session['admin'] = False;
+        return redirect(url_for('index'))
+
+    topics_in_db = db.execute(
+        "SELECT * FROM exam_details"
+    ).fetchall()
+
+    topics = []
+
+    for topic in topics_in_db:
+        topics.append({"id": topic["id"], "topic_name": topic["topic_name"]})
+
+    return render_template("admin/questions.html", topics=topics)
+
+
+@admin_blueprint.route('/download/questions', methods=['GET', 'POST'])
+def download_questions():
+    db = get_db()
+    if request.method == "POST":
+        topic_id = request.form['topic_id']
+        questions_in_db = db.execute(
+            "SELECT * FROM questions \
+            WHERE topic_id = ?", (topic_id,)
+        ).fetchall()
+        column_names = [
+            "id",
+            "topic_id",
+            "question_statement",
+            "a",
+            "b",
+            "c",
+            "d",
+            "answer"
+        ]
+        topic_name = db.execute(
+            "SELECT * FROM exam_details WHERE id = ?", (topic_id,)
+        ).fetchone()["topic_name"]
+
+        file_name = f"{topic_id}_{topic_name}.csv"
+        file_path = os.path.join(data_dir, file_name)
+        fp = open(file_path, 'w+')
+        # use lineterminator for windows
+        myFile = csv.writer(fp, lineterminator='\n')
+        myFile.writerow(column_names)
+
+        for row in questions_in_db:
+            question = [
+                row["id"],
+                row["topic_id"],
+                row["question_statement"],
+                row["a"],
+                row["b"],
+                row["c"],
+                row["d"],
+                row["answer"]
+            ]
+            myFile.writerow(question)
+
+        fp.close()
+        return send_file(file_path, as_attachment=True)
+
+
+@admin_blueprint.route('/upload/questions', methods=['GET', 'POST'])
+def upload_questions():
+    db = get_db()
+    if request.method == "POST":
+
+        if 'file' not in request.files:
+            flash('No files')
+            return redirect(url_for('admin.admin'))
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(url_for('admin.admin'))
+        file_name = file.filename
+
+        topic_id, topic_name = file_name.split('_')
+        file_path = os.path.join(data_dir, file_name)
+
+        file.save(file_path)
+
+        update_rows = []
+        new_rows = []
+        delete_rows = []
+
+        with open(file_path, mode='r')as file:
+
+            # reading the CSV file
+            csvFile = csv.reader(file)
+
+            # displaying the contents of the CSV file
+            for lines in csvFile:
+                print(lines)
+                if (lines[0] == ''):
+                    new_rows.append(lines)
+                elif (lines[1] == '' and lines[2] == '' and lines[3] == ''):
+                    delete_rows.append(lines[0])
+                else:
+                    update_rows.append(lines)
+
+        update_rows.pop(0)
+
+        print("update", update_rows)
+        print("new", new_rows)
+        print("delete", delete_rows)
+
+        for id in delete_rows:
+            db.execute(
+                "DELETE FROM questions where id=?", (id,)
+            )
+        for lines in update_rows:
+            db.execute(
+                "UPDATE questions SET question_statement=?, a=?, b=?, c=?, d=?, answer=? WHERE id=?", (
+                    lines[2], lines[3], lines[4], lines[5], lines[6], lines[7], lines[0])
+            )
+
+        for lines in new_rows:
+            db.execute(
+                "INSERT INTO questions (topic_id, question_statement, a, b, c, d, answer) VALUES(?,?,?,?,?,?,?)",
+                (topic_id, lines[2], lines[3],
+                 lines[4], lines[5], lines[6], lines[7])
+            )
+        db.commit()
+        error = "updated questions for " + topic_name
+        flash(error)
+        return redirect(url_for('admin.admin_question'))
 
 
 @admin_blueprint.route('/download/syllabus', methods=['GET', 'POST'])
