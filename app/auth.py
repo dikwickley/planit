@@ -9,11 +9,14 @@ from app.db import get_db
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
+
 def check_admin(user_id):
     db = get_db()
-    user_in_db = db.execute('SELECT * FROM admin WHERE user_id = ?',(user_id,)).fetchone()
-    
-    return not user_in_db==None
+    user_in_db = db.execute(
+        'SELECT * FROM admin WHERE user_id = ?', (user_id,)).fetchone()
+
+    return not user_in_db == None
+
 
 @auth_blueprint.route('/login', methods=('GET', 'POST'))
 def login():
@@ -26,28 +29,25 @@ def login():
             'SELECT * FROM user WHERE email = ?', (email,)
         ).fetchone()
 
-
         if user is None:
             error = 'Incorrect email.'
             flash(error)
             return render_template('auth/login.html')
-
 
         if not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
             flash(error)
             return render_template('auth/login.html')
 
-    
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            session['admin'] = None
-            if(check_admin(user['id'])):
+            session['admin'] = False
+            if (check_admin(user['id'])):
                 session['admin'] = True
             session['email'] = user['email']
             session['name'] = user['name']
-            if(user['configured']==0):
+            if (user['configured'] == 0):
                 return redirect(url_for('plan.configure'))
             return redirect(url_for('index'))
 
@@ -55,14 +55,14 @@ def login():
 
     return render_template('auth/login.html')
 
+
 @auth_blueprint.route('/signup', methods=('GET', 'POST'))
 def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        confirm_password =  request.form['confirm_password']
+        confirm_password = request.form['confirm_password']
         name = request.form['name']
-
 
         db = get_db()
         error = None
@@ -82,7 +82,7 @@ def signup():
             try:
                 db.execute(
                     "INSERT INTO user (email, password, name) VALUES (?, ?, ?)",
-                    (email, generate_password_hash(password),name),
+                    (email, generate_password_hash(password), name),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -106,28 +106,31 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
+
 @auth_blueprint.route('/logout')
 def logout():
     session.clear()
-    error="logged out"
+    error = "logged out"
     flash(error)
     return redirect(url_for('index'))
+
 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            error="login required"
+            error = "login required"
             flash(error)
             return redirect(url_for('auth.login'))
         return view(**kwargs)
 
     return wrapped_view
 
+
 def configured_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if(g.user['configured']==0):
+        if (g.user['configured'] == 0):
             return redirect(url_for('plan.configure'))
         return view(**kwargs)
 

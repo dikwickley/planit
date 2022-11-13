@@ -5,8 +5,50 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full h-full flex flex-col justify-center">
+<div class="w-full h-full flex flex-col ">
+    <div class="y-scroll">
+        <div class="flex flex-col">
+            <div class="text-3xl text-pred">Statistics</div>
+            <div class="flex flex-row">
+                <div class="flex flex-col items-center m-3">
+                    <div class="text-2xl text-pgreen">Total Exams</div>
+                    <div class="text-7xl text-white">{{data['exams_in_db']}}</div>
+                </div>
+                <div class="flex flex-col items-center m-3">
+                    <div class="text-2xl text-pgreen">Total Users</div>
+                    <div class="text-7xl text-white">{{data['users_in_db']}}</div>
+                </div>
+                <div class="flex flex-col items-center m-3">
+                    <div class="text-2xl text-pgreen">Total Tests Given</div>
+                    <div class="text-7xl text-white">{{data['tests_in_db']}}</div>
+                </div>
+            </div>
+            <div class="text-3xl text-pred mt-5">User Plan Progress</div>
+            <div class="flex items-center">
+                <div class="text-1xl text-pgreen m-2">Select User</div>
+                <select id="user_email" name="user_email"
+                    class="bg-white text-pblack py-1 px-5  text-center m-1 cursor-pointer w-[300px] my-2">
+                    <option value="">None</option>
 
+                    -->
+                    {% for user in users %}
+                    <option value="{{user['email']}}">{{user['id']}}. {{user['name']}}</option>
+                    {% endfor %}
 
+                </select>
+
+            </div>
+        </div>
+
+    </div>
 </div>
+<script>
+    document.getElementById('user_email').addEventListener('change', function () {
+
+        if (this.value != "") {
+            console.log('You selected: ', this.value);
+            window.location.replace(`/admin/plan/${this.value}`);
+        }
+    });
+</script>
 {% endblock %}

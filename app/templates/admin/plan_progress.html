@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Account Progess{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="w-full h-full flex flex-col justify-start">
+    <div class="flex justify-end">
+        <!-- <a href="{{ url_for('account.show_account',screen='profile') }}">
+            <button class="bg-pgreen text-pblack py-1 px-5  text-center m-1 cursor-pointer text-2xl">
+                Profile
+            </button>
+        </a> -->
+
+
+    </div>
+
+    <div class="pt-4 px-5 text-white h-full">
+
+        <div class="w-full h-full flex flex-row ">
+
+            <div class="flex flex-col items-center w-[100%] p-2 h-full  overflow-hidden">
+
+
+                <div class="text-3xl pb-3 self-start">Progress of <span class="text-pred"> {{email}}</span></div>
+                <div class="flex flex-row items-center   w-full mt-8">
+                    <div class="m-2 w-[30vw]">
+                        <div class="text-1xl pb-3 text-center">Subject Wise Completion</div>
+                        <canvas id="subject_completion"></canvas>
+                    </div>
+
+
+                    <div class=" m-2 w-[30vw]">
+                        <div class="text-1xl pb-3 self-start text-center">Comparision of Number of topics</div>
+                        <canvas id="topic_number"></canvas>
+                    </div>
+
+                </div>
+                <!-- <div class="text-3xl py-3 self-start">Completed Topics</div>
+                    <div class="self-start w-[100%]">
+                        {% for topic in completed_topics %}
+
+                        <div class="tooltip">
+
+                            <div class="m-1 px-2 flex flex-row rounded-lg bg-white text-pblack text-sm font-bold mx-1">
+                                <div class="pr-1">
+                                    {{topic.topic_count}}
+                                </div>
+                                <div class="truncate-lg">
+                                    {{topic.topic_name}}
+                                </div>
+                            </div>
+                            <span class="tooltiptext">{{topic.subject_name}}:
+                                {{topic.topic_name}}</span>
+                        </div>
+                        {% endfor %}
+                    </div> -->
+
+            </div>
+
+
+        </div>
+        <script src="/static/timer.js"> </script>
+        <script src="/static/shades.js"> </script>
+        <script>
+
+        </script>
+        <script>
+
+            let dates = JSON.parse('{{dates | safe}}')
+            CreateTimer("timer", dates.end_date)
+        </script>
+        <script>
+            let topic_numbers = JSON.parse('{{topic_number_data | safe}}')
+
+            const topic_number_data = {
+                labels: [""],
+                datasets: [{
+                    label: 'completed',
+                    backgroundColor: ['#08D9D6'],
+                    data: [topic_numbers.completed],
+                },
+                {
+                    label: 'uncompleted',
+                    backgroundColor: ['#FF2E63'],
+                    data: [topic_numbers.uncompleted],
+                }]
+            };
+
+            const topic_number_config = {
+                type: 'bar',
+                data: topic_number_data,
+                options: {
+                    scales: {
+                        x: {
+                            grid: {
+                                color: " white",
+                            }
+                        }, y: { grid: { color: "white" } }
+                    }, indexAxis: 'y', elements: {
+                        bar: { borderWidth: 1, }
+                    }, responsive: true, plugins: {
+                        legend: {
+                            position: 'top', labels: {
+                                color: "white"
+                            }
+                        },
+                    }
+                },
+            };
+            const total_number_char = new Chart(
+                document.getElementById('topic_number'), topic_number_config);
+
+            let subject_completion = JSON.parse('{{subject_data | safe}}')
+
+            console.log(subject_completion)
+
+            colors = generateShades("#08D9D6", Object.keys(subject_completion).length);
+            colors.shift();
+            colors.push('grey')
+
+            const subject_completion_data = {
+                labels: Object.keys(subject_completion),
+                datasets: [{
+                    label: 'Subject Wise Distribution',
+                    backgroundColor: colors,
+                    // borderColor: 'rgb(255, 99, 132)',
+                    data: Object.values(subject_completion),
+                }]
+            };
+
+            const subject_completion_config = {
+                type: 'doughnut',
+                data: subject_completion_data,
+                options: {
+                    layout: {
+                        padding: 3
+                    },
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                color: "white"
+                            }
+                        }
+                    }
+                }
+            };
+            const subject_completion_chart = new Chart(
+                document.getElementById('subject_completion'),
+                subject_completion_config
+            );
+
+        </script>
+
+
+    </div>
+</div>
+{% endblock %}

@@ -24,7 +24,84 @@ def admin():
         # session['admin'] = False;
         return redirect(url_for('index'))
 
-    return render_template("admin/dashboard.html")
+    data = {}
+
+    exams_in_db = db.execute(
+        "SELECT count(*) as count from exam").fetchone()['count']
+
+    users_in_db = db.execute(
+        "SELECT count(*) as count from user").fetchone()['count']
+
+    tests_in_db = db.execute(
+        "SELECT count(*) as count from test").fetchone()['count']
+
+    data['exams_in_db'] = exams_in_db
+    data['users_in_db'] = users_in_db
+    data['tests_in_db'] = tests_in_db
+
+    users = []
+    user_details_in_db = db.execute(
+        "SELECT * FROM user WHERE configured=1"
+    ).fetchall()
+
+    for user in user_details_in_db:
+        print(user['name'])
+        users.append({
+            "id": user['id'],
+            "email": user['email'],
+            "name": user['name']
+        })
+
+    return render_template("admin/dashboard.html", data=data, users=users)
+
+
+@admin_blueprint.route('/plan/<email>', methods=['GET', 'POST'])
+def admin_user_plan_progress(email):
+    db = get_db()
+
+    plan_in_db = db.execute(
+        "SELECT * FROM plan\
+            WHERE email=?", (email,)
+    ).fetchone()
+
+    plan_id = plan_in_db["id"]
+    start_date = plan_in_db["start_date"]
+    end_date = plan_in_db["end_date"]
+
+    dates = {
+        "start_date": start_date.strftime("%m/%d/%Y"),
+        "end_date": end_date.strftime("%m/%d/%Y")
+    }
+
+    uncompleted_topics_in_db = db.execute(
+        "SELECT * FROM plan_details WHERE completed = 0 AND plan_id=?", (
+            plan_id,)
+    ).fetchall()
+
+    completed_topics_in_db = db.execute(
+        "SELECT * FROM plan_details WHERE completed = 1 AND plan_id=?", (
+            plan_id,)
+    ).fetchall()
+
+    topic_number_data = {
+        "completed": len(completed_topics_in_db),
+        "uncompleted": len(uncompleted_topics_in_db),
+    }
+    print(topic_number_data)
+
+    subject_data = {}
+
+    for topic_row in completed_topics_in_db:
+        if topic_row["subject_name"] in subject_data:
+            subject_data[topic_row["subject_name"]] += 1
+        else:
+            subject_data[topic_row["subject_name"]] = 1
+
+    subject_data["Uncompleted"] = len(uncompleted_topics_in_db)
+
+    print(subject_data)
+
+    return render_template('admin/plan_progress.html', email=email, topic_number_data=json.dumps(topic_number_data), start_end=dates, dates=json.dumps(dates), subject_data=json.dumps(subject_data))
 
 
 @admin_blueprint.route('/syllabus', methods=['GET', 'POST'])
@@ -44,6 +121,7 @@ def admin_syllabus():
     for exam in exams_in_db:
         exams.append({"id": exam["id"], "exam_name": exam["exam_name"]})
     print(exams)
+
     return render_template("admin/syllabus.html", exams=exams)
 
 # @admin_blueprint.route('/download/questions', methods=['GET','POST'])
