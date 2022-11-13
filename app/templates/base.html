@@ -105,11 +105,13 @@
         Hello, {{session['name']}}
         {% endif %}
       </div>
-      <div class="text-white p-2 text-xl w-[200px]">
+      {% if is_quote == True %}
+      <div class="text-pgreen p-2 text-xl w-[200px] font-bold text-right">
         "{{quote}}"
         <br />
         -{{author}}
       </div>
+      {% endif %}
 
     </div>
 
@@ -211,25 +213,25 @@
 <!-- <script src="three.r119.min.js" defer></script>
 <script src="vanta.globe.min.js" defer></script> -->
 <script>
-// VANTA.GLOBE({
-//   //Add the id of your tag with the # before
-//     el: "#anim_globe",
-//   //All the controles for the user
-//     mouseControls: false,
-//     touchControls: false,
-//     gyroControls: false,
-//   //Control the min-size of the animation
-//     minHeight: 500.00,
-//     minWidth: 500.00,
-//   //Modify the sizing
-//     scale: 1.00,
-//     scaleMobile: 1.00,
-//     size:0.90,
-//   //Customise the colors
-//     // color: 0x40db33,
-//     // color2: 0x4f17ef,
-//     // backgroundColor: 0xd83423
-//   })
+  // VANTA.GLOBE({
+  //   //Add the id of your tag with the # before
+  //   el: "#anim_globe",
+  //   //All the controles for the user
+  //   mouseControls: false,
+  //   touchControls: false,
+  //   gyroControls: false,
+  //   //Control the min-size of the animation
+  //   minHeight: 500.00,
+  //   minWidth: 500.00,
+  //   //Modify the sizing
+  //   scale: 1.00,
+  //   scaleMobile: 1.00,
+  //   size: 0.90,
+  //   //Customise the colors
+  //   // color: 0x40db33,
+  //   // color2: 0x4f17ef,
+  //   // backgroundColor: 0xd83423
+  // })
 </script>
 
 

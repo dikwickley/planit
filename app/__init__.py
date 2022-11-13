@@ -1,6 +1,8 @@
 import os
+
 import requests
 from flask import Flask, render_template, session
+
 
 def get_random_quote():
     try:
@@ -16,6 +18,7 @@ def get_random_quote():
 
 
 from .auth import login_required
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -42,12 +45,7 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import auth
-    from . import exam
-    from . import plan
-    from . import practice
-    from . import account
-    from . import admin
+    from . import account, admin, auth, exam, plan, practice
     app.register_blueprint(auth.auth_blueprint)
     app.register_blueprint(exam.exam_blueprint)
     app.register_blueprint(plan.plan_blueprint)
@@ -61,8 +59,10 @@ def create_app(test_config=None):
         # user = None
         # if 'email' in session:
         #     user = session['email']
+        # return render_template("index.html", is_quote=False)
         data = get_random_quote()
-        return render_template("index.html", quote=data['quote'], author=data['author'])
+        return render_template("index.html", is_quote=True, quote=data['quote'], author=data['author'])
+        
         
     @app.errorhandler(404)
     def page_not_found(error):
