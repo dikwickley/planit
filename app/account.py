@@ -25,6 +25,9 @@ def trim_string(s: str, limit: int, ellipsis='…') -> str:
 def show_account(screen):
     db = get_db()
     email = session['email']
+    # if("admin" in session and session["admin"]==True):
+    #     error="admin"
+    #     return redirect(url_for('admin.admin'))
 
     if screen == "plan-dashboard":
 

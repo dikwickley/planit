@@ -42,11 +42,13 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            session['admin'] = False
-            if (check_admin(user['id'])):
-                session['admin'] = True
             session['email'] = user['email']
             session['name'] = user['name']
+
+            if (check_admin(user['id'])):
+                session['admin'] = True
+                return redirect(url_for('admin.admin'))
+
             if (user['configured'] == 0):
                 return redirect(url_for('plan.configure'))
             return redirect(url_for('index'))
