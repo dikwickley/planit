@@ -1,33 +1,40 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Config{% endblock %}</h1>
+<h1>{% block title %}Config Plan{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 <div class="w-full h-full flex flex-col justify-center">
-    <form method="post" class="flex flex-col">
-        <div class="text-white">Choose Exam</div>
-        <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
-          {% for exam in exams %}
-          <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
-          {% endfor%}
-        </select>
-        <div class="text-white">Start Date</div>
-        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="start date" name="start_date" id="start_date" required>
-        <div class="text-white">End Date</div>
-        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="end date" name="end_date" id="end_date" required>
-        <div class="text-white">Daily Hours</div>
-        <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="number" value=8 placeholder="daily hours" name="daily_hours" id="daily_hours" required>
-        <div class="text-white">Plan Type</div>
-        <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="plan_type" id="plan_type">
-            <option value="increasing">Increasing</option>
-            <option value="decreasing">Decreasing</option>
-            <option value="constant">Constant</option>
-        </select>
-        <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit" value="make plan">
-        <div class="text-white">Don't know about plan type? <span class="text-pred cursor-pointer">Click here</span></div>
-      </form>
+  <form method="post" class="flex flex-col">
+    <div class="text-white">Choose Exam</div>
+    <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
+      {% for exam in exams %}
+      <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
+      {% endfor%}
+      <option disabled>gate mechanical</option>
+      <option disabled>gate electronics</option>
+      <option disabled>gate civil</option>
+    </select>
+    <div class="text-white">Start Date</div>
+    <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="start date"
+      name="start_date" id="start_date" required>
+    <div class="text-white">End Date</div>
+    <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="date" placeholder="end date"
+      name="end_date" id="end_date" required>
+    <div class="text-white">Daily Hours</div>
+    <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="number" value=8 placeholder="daily hours"
+      name="daily_hours" id="daily_hours" required>
+    <div class="text-white">Plan Type</div>
+    <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="plan_type" id="plan_type">
+      <option value="increasing">Increasing</option>
+      <option value="decreasing">Decreasing</option>
+      <option value="constant">Constant</option>
+    </select>
+    <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit"
+      value="make plan">
+    <div class="text-white">Don't know about plan type? <span class="text-pred cursor-pointer">Click here</span></div>
+  </form>
 </div>
-  
+
 {% endblock %}

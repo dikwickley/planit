@@ -12,7 +12,8 @@
     <input class="w-[25vw] h-[5vh] my-2 p-2 text-xl" autocomplete="off" type="password" placeholder="password"
       name="password" id="password" required>
     <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack " type="submit" value="login">
-    <div class="text-white">Don't have an account? <span class="text-pred">Register</span></div>
+    <div class="text-white">Don't have an account?<a href="{{ url_for('auth.signup') }}"> <span
+          class="text-pred">Register</span></a></div>
     <!-- <div class="text-white">Can't remember your password? <span class="text-pred">Forgot password</span></div> -->
   </form>
 </div>

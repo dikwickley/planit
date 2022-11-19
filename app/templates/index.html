@@ -34,8 +34,15 @@
     font-size: 1.5em;
   }
 </style>
-<div class="flex flex-col items-center w-full p-2 h-full  overflow-hidden">
+<div class="flex flex-col justify-center w-full p-2 h-full  overflow-hidden">
   <div class="y-scroll">
+    <div class="ml-32">
+      <div class="text-7xl text-white font-bold">Welcome!</div>
+      <div class="text-white">We help you make the perfect plan for your exam</div>
+      <a href="{{ url_for('plan.show_plan') }}">
+        <button class="bg-pgreen h-[5vh] my-2 px-4 text-[3vh] leading-none text-pblack ">Make Your Plan!</button>
+      </a>
+    </div>
     <!-- <h1 class="text-pgreen text-7xl"> Welcome!</h1> -->
     <!-- 
     <h1 id="heading1"> We help you make the perfect plan for your exam with the help of advanced machine learning

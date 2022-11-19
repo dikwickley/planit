@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Demo{% endblock %}</h1>
+<h1>{% block title %}Demo{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
 <div class="w-full h-full flex flex-col justify-center  y-scroll">
-    {% if request.method == "GET" %}
-    <form method="post" class="flex flex-col">
-        <div class="text-white">Choose exam</div>
-        <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
-          {% for exam in exams %}
-          <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
-          {% endfor%}
-        </select>
+  {% if request.method == "GET" %}
+  <form method="post" class="flex flex-col">
+    <div class="text-white">Choose exam</div>
+    <select class="w-[25vw] h-[5vh] my-2 p-2 text-xl" name="exam" id="exam">
+      {% for exam in exams %}
+      <option value="{{exam['id']}}">{{exam["exam_name"]}}</option>
+      {% endfor%}
+      <option disabled>gate mechanical</option>
+      <option disabled>gate electronics</option>
+      <option disabled>gate civil</option>
+    </select>
 
-        <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit" value="make test">
-    </form>
-    {% endif %}
-    <!-- {% if request.method == "POST" %}
+    <input class="w-[12vw] bg-pgreen h-[5vh] my-2 text-[3vh] leading-none text-pblack cursor-pointer" type="submit"
+      value="make test">
+  </form>
+  {% endif %}
+  <!-- {% if request.method == "POST" %}
     <form method="post" action = "{{url_for('practice.make_test')}}"class="flex flex-col   y-scroll">
       <div class="h-[80%] text-xl">
         <div class="text-pred text-7xl mb-7">{{ exam_name }}</div>
@@ -48,12 +52,12 @@
 </div>
 
 <script>
-function select_subject(event){
-  let subject_id =   event.target.dataset.subject_id
-  let boxes = document.getElementsByClassName(`subject_${subject_id}`);
-  for(let x = 0; x<boxes.length;x+=1){
-    boxes[x].checked = event.target.checked;
+  function select_subject(event) {
+    let subject_id = event.target.dataset.subject_id
+    let boxes = document.getElementsByClassName(`subject_${subject_id}`);
+    for (let x = 0; x < boxes.length; x += 1) {
+      boxes[x].checked = event.target.checked;
+    }
   }
-}
 </script>
 {% endblock %}

@@ -36,7 +36,7 @@ def admin():
         "SELECT count(*) as count from test").fetchone()['count']
 
     data['exams_in_db'] = exams_in_db
-    data['users_in_db'] = users_in_db
+    data['users_in_db'] = users_in_db - 1
     data['tests_in_db'] = tests_in_db
 
     users = []
@@ -58,6 +58,9 @@ def admin():
 @admin_blueprint.route('/plan/<email>', methods=['GET', 'POST'])
 def admin_user_plan_progress(email):
     db = get_db()
+
+    if ("admin" not in session):
+        return redirect(url_for('index'))
 
     plan_in_db = db.execute(
         "SELECT * FROM plan\

@@ -1,1 +1,2 @@
 1. fix date distribution in test dashboard
+2. disable uncompleted topics on tests
