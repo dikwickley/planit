@@ -9,3 +9,4 @@ Werkzeug==2.2.2
 requests
 lorem_text
 audioop-lts
+cgi
