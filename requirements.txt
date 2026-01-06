@@ -8,4 +8,4 @@ pymongo==4.2.0
 Werkzeug==2.2.2
 requests
 lorem_text
-audioop
+audioop-lts
